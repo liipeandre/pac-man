@@ -1,4 +1,4 @@
-# Fundamentos de Jogos Digitais
+# Pac-man
 
 Trabalho desenvolvido para a disciplina de Fundamentos de Jogos Digitais do curso
 de Bacharelado em Ciência da Computação da Universidade Tuiuti do Paraná.
