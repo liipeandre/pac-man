@@ -15,7 +15,7 @@ def main():
     jogo = Game(tela)
 
     # loop do jogo
-    jogo.run(tela)
+    jogo.run()
 
 if __name__ == "__main__":
     main()
