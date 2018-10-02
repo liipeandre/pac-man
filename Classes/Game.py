@@ -1,12 +1,18 @@
 from pygame import *
 from Classes.Personagens.Pacman import *
 from Classes.Personagens.Blinky import *
+from Classes.Personagens.Pinky import *
+from Classes.Personagens.Inky import *
+from Classes.Personagens.Clyde import *
 
 class Game():
     def __init__(self, tela):
         self.tela = tela
         self.pacman = Pacman((50, 50), self)
-        self.blinky = Blinky((100, 100), self)
+        self.blinky = Blinky((80, 80), self)
+        self.pinky = Pinky((100, 100), self)
+        self.inky = Inky((150, 150), self)
+        self.clyde = Clyde((200, 200), self)
         return
 
     def tratar_eventos(self):
@@ -29,6 +35,9 @@ class Game():
         # desenha cada personagem em tela.
         self.pacman.draw(self.tela)
         self.blinky.draw(self.tela)
+        self.pinky.draw(self.tela)
+        self.inky.draw(self.tela)
+        self.clyde.draw(self.tela)
 
     def atualiza_estado_jogo(self):
         ''' atualiza estado do jogo (movimentacao da IA, logica de colisao, itens, pontuacao, etc.)'''

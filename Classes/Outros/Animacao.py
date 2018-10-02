@@ -11,7 +11,7 @@ class Acao(Enum):
 class Animacao():
     sprite_sheet = None
     def __init__(self, dimensoes_sprites : Rect):
-        self.sprite_atual = 2
+        self.sprite_atual = 0
         self.dimensoes_sprites = dimensoes_sprites
         if self.sprite_sheet is None: self.sprite_sheet = image.load("Graphics/sprite_sheet.png")
 
