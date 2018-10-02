@@ -24,7 +24,14 @@
     <Compile Include="Classes\Personagens\Blinky.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\Personagens\Clyde.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Classes\Personagens\Inky.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Classes\Personagens\Pacman.py" />
+    <Compile Include="Classes\Personagens\Pinky.py" />
     <Compile Include="main.py" />
   </ItemGroup>
   <ItemGroup>
