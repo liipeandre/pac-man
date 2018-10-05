@@ -7,7 +7,7 @@ def main():
     pygame.init()
 
     # crio a janela com o nome pacman
-    tamanho_tela = (480, 640)
+    tamanho_tela = (640, 495)
     tela = pygame.display.set_mode(tamanho_tela)
     pygame.display.set_caption("Pac-man!")
 
@@ -16,6 +16,9 @@ def main():
 
     # loop do jogo
     jogo.run()
+
+    # desaloca recursos do pygame
+    pygame.quit()
 
 if __name__ == "__main__":
     main()
