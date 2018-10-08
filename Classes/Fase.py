@@ -4,10 +4,11 @@ from Classes.Personagens.Blinky import *
 from Classes.Personagens.Pinky import *
 from Classes.Personagens.Inky import *
 from Classes.Personagens.Clyde import *
-from Classes.Tiles.Wall import *
+from Classes.Tiles.Parede import *
 
 class Fase():
     def __init__(self, nome_fase:str, jogo):
+        # listas de elementos do jogo
         self.pacman = None
         self.blinky = None
         self.pinky = None
@@ -15,26 +16,31 @@ class Fase():
         self.clyde = None
         self.paredes = []
         self.lista_itens = []
+        
+        # espacamento entre 2 elementos do jogo
+        self.tamanho_quadro = 18
 
+        # carrego o mapa a partir do arquivo
         with open("Maps/" + nome_fase + ".txt", "r") as arquivo:
             self.mapa = arquivo.readlines()
             for i in range(len(self.mapa)):
                 for j in range(len(self.mapa[i])):
                     if self.mapa[i][j] == 'A': 
-                        self.pacman = Pacman([16 * j, 16 * i], jogo)
+                        self.pacman = Pacman([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
                     elif self.mapa[i][j] == 'B': 
-                        self.blinky = Blinky([16 * j, 16 * i], jogo)
+                        self.blinky = Blinky([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
                     elif self.mapa[i][j] == 'C': 
-                        self.pinky = Pinky([16 * j, 16 * i], jogo)
+                        self.pinky = Pinky([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
                     elif self.mapa[i][j] == 'D': 
-                        self.inky = Inky([16 * j, 16 * i], jogo)
+                        self.inky = Inky([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
                     elif self.mapa[i][j] == 'E': 
-                        self.clyde = Clyde([16 * j, 16 * i], jogo)
+                        self.clyde = Clyde([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
                     elif self.mapa[i][j] == '1': 
-                        self.paredes.append(Parede([16 * j, 16 * i], jogo))
+                        self.paredes.append(Parede([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo, self))
 
 
     def draw(self, jogo):
+        # desenha os elementos do jogo em tela
         self.pacman.draw(jogo.tela)
         self.blinky.draw(jogo.tela)
         self.pinky.draw(jogo.tela)
