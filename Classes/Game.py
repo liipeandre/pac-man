@@ -9,8 +9,8 @@ from Classes.Fase import *
 
 class Game():
     def __init__(self, tela):
+        # variaveis de controle do jogo
         self.rodando = True
-        self.clock = time.Clock()
         self.tela = tela
         self.fase_atual = 0
         self.pontuacao = 0
@@ -25,14 +25,8 @@ class Game():
         event.pump()
         teclas = key.get_pressed()
 
-        # ordena as paredes pela proximidade
-        x, y = 0, 1
-        self.fases[self.fase_atual].paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.fases[self.fase_atual].pacman.posicao[x]) +\
-                                                                      abs(elemento.posicao[y] - self.fases[self.fase_atual].pacman.posicao[y]))
-
         # faz a movimentacao do pacman
-        for parede in self.fases[self.fase_atual].paredes[:7]:
-            self.fases[self.fase_atual].pacman.move(teclas, parede, self)
+        self.fases[self.fase_atual].pacman.move(teclas, self)
 
 
     def atualizar_tela(self):
@@ -69,6 +63,3 @@ class Game():
 
             # atualizar a tela, com os dados do buffer
             display.update()
-
-            # atualiza o clock
-            #self.clock.tick(200)

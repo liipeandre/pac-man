@@ -1,15 +1,15 @@
 from Classes.Outros.Animacao import *
 from pygame import *
 from Classes.Game import *
-from Classes.Tiles.Wall import *
+from Classes.Tiles.Parede import *
 
 class Pacman(object):
     def __init__(self, posicao_personagem: list, jogo):
         # posicoes do personagem na tela, a acao que ele esta fazendo e a velocidade de movimentacao
         self.posicao = posicao_personagem
         self.acao = Acao.Parado
-        self.velocidade = 0.5
-        self.dimensoes_bounding_box = (16, 16)
+        self.velocidade = 1
+        self.dimensoes_bounding_box = (14, 14)
 
         # carrego o sprite sheet inteiro.
         sprite_sheet = image.load("Graphics/sprite_sheet.png")
@@ -39,89 +39,123 @@ class Pacman(object):
         # desenho a animação, dado o sprite atual e as dimensoes já armazenadas.
         self.animacao.draw(tela, self)
 
-    def move(self, teclas, parede:Wall, jogo):
-        # verifico as teclas de movimentacao do pacman
+    def gera_bounding_box(self, objeto):
+        # apelido dos eixos 
         x, y = 0, 1
 
-        # se a tecla foi pressionada
-        if teclas[K_UP]:
-            self.posicao[y] -= self.velocidade
-            if self.colisao(parede):
-                self.posicao[y] += self.velocidade
-                self.acao = Acao.Parado
-            else:
-                self.acao = Acao.AndarCima
-                
-        elif teclas[K_DOWN]:
-            self.posicao[y] += self.velocidade
-            if self.colisao(parede):
-                self.posicao[y] -= self.velocidade
-                self.acao = Acao.Parado
-            else:
-                self.acao = Acao.AndarBaixo
-
-        elif teclas[K_LEFT]:
-            self.posicao[x] -= self.velocidade
-            if self.colisao(parede):
-                self.posicao[x] += self.velocidade
-                self.acao = Acao.Parado
-            else:
-                self.acao = Acao.AndarEsquerda
-
-        elif teclas[K_RIGHT]:
-            self.posicao[x] += self.velocidade
-            if self.colisao(parede):
-                self.posicao[x] -= self.velocidade
-                self.acao = Acao.Parado
-            else:
-                self.acao = Acao.AndarDireita
-
-        # se nenhuma tecla foi pressionada, continua a última acao feita.
-        else:
-            if int(self.acao) == int(Acao.AndarCima):
-                self.posicao[y] -= self.velocidade
-                if self.colisao(parede):
-                    self.posicao[y] += self.velocidade
-                    self.acao = Acao.Parado
-                    self.animacao.sprite_atual = 2
-                else:
-                    self.acao = Acao.AndarCima
-                
-            elif int(self.acao) == int(Acao.AndarBaixo):
-                self.posicao[y] += self.velocidade
-                if self.colisao(parede):
-                    self.posicao[y] -= self.velocidade
-                    self.acao = Acao.Parado
-                    self.animacao.sprite_atual = 3
-                else:
-                    self.acao = Acao.AndarBaixo
-
-            elif int(self.acao) == int(Acao.AndarEsquerda):
-                self.posicao[x] -= self.velocidade
-                if self.colisao(parede):
-                    self.posicao[x] += self.velocidade
-                    self.acao = Acao.Parado
-                    self.animacao.sprite_atual = 1
-                else:
-                    self.acao = Acao.AndarEsquerda
-
-            elif int(self.acao) == int(Acao.AndarDireita):
-                self.posicao[x] += self.velocidade
-                if self.colisao(parede):
-                    self.posicao[x] -= self.velocidade
-                    self.acao = Acao.Parado
-                    self.animacao.sprite_atual = 0
-                else:
-                    self.acao = Acao.AndarDireita
-
-
-    def colisao(self, objeto):
-        # apelido as coordenadas
-        x, y = 0, 1
-        
-        # gero as duas bounding boxes, uma de cada objeto
+        # gero as duas bounding boxes (um retangulo), uma de cada objeto
         bounding_box_self = Rect(self.posicao[x], self.posicao[y], self.dimensoes_bounding_box[x], self.dimensoes_bounding_box[y])
         bounding_box_objeto = Rect(objeto.posicao[x], objeto.posicao[y], objeto.dimensoes_bounding_box[x], objeto.dimensoes_bounding_box[y])
         
-        # faco o teste de colisao do pacman com outro objeto
-        return bool(bounding_box_self.colliderect(bounding_box_objeto))
+        # retorna as duas bounding boxes.
+        return bounding_box_self, bounding_box_objeto
+
+
+    def move(self, teclas, jogo):
+        # apelido dos eixos 
+        x, y = 0, 1
+        
+        # ordena as paredes pela proximidade
+        jogo.fases[jogo.fase_atual].paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - jogo.fases[jogo.fase_atual].pacman.posicao[x]) +\
+                                                                      abs(elemento.posicao[y] - jogo.fases[jogo.fase_atual].pacman.posicao[y]))
+        # defino um limite de busca
+        limite_busca = 7
+
+        if teclas[K_UP]:                                                                 # se a tecla foi pressionada
+            self.posicao[y] -= self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+            for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                    self.posicao[y] += self.velocidade                                   # logo devo desfaze-la
+                    self.acao = Acao.Parado
+                    self.animacao.sprite_atual = 0                                       # coloco o sprite atual de acordo com a direcao de movimento
+                else:
+                    self.acao = Acao.AndarCima
+         
+        elif teclas[K_DOWN]:                                                             # se a tecla foi pressionada
+            self.posicao[y] += self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+            for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                    self.posicao[y] -= self.velocidade                                   # logo devo desfaze-la
+                    self.acao = Acao.Parado
+                    self.animacao.sprite_atual = 0                                       # coloco o sprite atual de acordo com a direcao de movimento
+                else:
+                    self.acao = Acao.AndarBaixo
+
+        elif teclas[K_LEFT]:                                                             # se a tecla foi pressionada
+            self.posicao[x] -= self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+            for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                    self.posicao[x] += self.velocidade                                   # logo devo desfaze-la
+                    self.acao = Acao.Parado
+                    self.animacao.sprite_atual = 0                                       # coloco o sprite atual de acordo com a direcao de movimento
+                else:
+                    self.acao = Acao.AndarEsquerda
+
+        elif teclas[K_RIGHT]:                                                            # se a tecla foi pressionada
+            self.posicao[x] += self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+            for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                    self.posicao[x] -= self.velocidade                                   # logo devo desfaze-la
+                    self.acao = Acao.Parado
+                    self.animacao.sprite_atual = 0                                       # coloco o sprite atual de acordo com a direcao de movimento
+                else:
+                    self.acao = Acao.AndarDireita
+
+        else:  # se nenhuma tecla foi pressionada, continua a última acao feita.
+            if int(self.acao) == int(Acao.AndarCima):                                   
+                self.posicao[y] -= self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+                for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                    bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                    if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                        self.posicao[y] += self.velocidade                                   # logo devo desfaze-la
+                        self.acao = Acao.Parado
+                        self.animacao.sprite_atual = 0                                       # coloco o sprite atual de acordo com a direcao de movimento
+                    else:
+                        self.acao = Acao.AndarCima
+
+            elif int(self.acao) == int(Acao.AndarBaixo):                                 
+                self.posicao[y] += self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+                for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                    bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                    if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                        self.posicao[y] -= self.velocidade                                   # logo devo desfaze-la
+                        self.acao = Acao.Parado
+                        self.animacao.sprite_atual = 0                                       # coloco o sprite atual de acordo com a direcao de movimento
+                    else:
+                        self.acao = Acao.AndarBaixo
+
+
+
+            elif int(self.acao) == int(Acao.AndarEsquerda):                              
+                self.posicao[x] -= self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+                for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                    bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                    if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                        self.posicao[x] += self.velocidade                                   # logo devo desfaze-la
+                        self.acao = Acao.Parado
+                        self.animacao.sprite_atual = 0
+                    else:
+                        self.acao = Acao.AndarEsquerda
+
+            elif int(self.acao) == int(Acao.AndarDireita):                               
+                self.posicao[x] += self.velocidade                                           # faço o movimento para depois validar se o movimento eh valido
+                for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            # testa se o personagem colidiu com a parede.
+                    bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  # gero as bounding boxes
+                
+                    if bounding_box_self.colliderect(bounding_box_objeto):                   # se colidiu com a parede, o movimento eh inválido, 
+                        self.posicao[x] -= self.velocidade                                   # logo devo desfaze-la
+                        self.acao = Acao.Parado
+                        self.animacao.sprite_atual = 0
+                    else:
+                        self.acao = Acao.AndarDireita
