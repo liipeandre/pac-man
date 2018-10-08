@@ -68,9 +68,7 @@
     <Compile Include="Classes\Personagens\Pacman.py" />
     <Compile Include="Classes\Personagens\Pinky.py" />
     <Compile Include="Classes\Personagens\__init__.py" />
-    <Compile Include="Classes\Tiles\Wall.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Classes\Tiles\Parede.py" />
     <Compile Include="Classes\Tiles\__init__.py" />
     <Compile Include="Classes\__init__.py" />
     <Compile Include="main.py" />

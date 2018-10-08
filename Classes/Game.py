@@ -4,7 +4,7 @@ from Classes.Personagens.Blinky import *
 from Classes.Personagens.Pinky import *
 from Classes.Personagens.Inky import *
 from Classes.Personagens.Clyde import *
-from Classes.Tiles.Wall import *
+from Classes.Tiles.Parede import *
 from Classes.Fase import *
 
 class Game():
@@ -25,8 +25,13 @@ class Game():
         event.pump()
         teclas = key.get_pressed()
 
+        # ordena as paredes pela proximidade
+        x, y = 0, 1
+        self.fases[self.fase_atual].paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.fases[self.fase_atual].pacman.posicao[x]) +\
+                                                                      abs(elemento.posicao[y] - self.fases[self.fase_atual].pacman.posicao[y]))
+
         # faz a movimentacao do pacman
-        for parede in self.fases[self.fase_atual].pacman.objetos_proximos(self):
+        for parede in self.fases[self.fase_atual].paredes[:7]:
             self.fases[self.fase_atual].pacman.move(teclas, parede, self)
 
 

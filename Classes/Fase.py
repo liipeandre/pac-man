@@ -13,7 +13,7 @@ class Fase():
         self.pinky = None
         self.inky = None
         self.clyde = None
-        self.walls = []
+        self.paredes = []
         self.lista_itens = []
 
         with open("Maps/" + nome_fase + ".txt", "r") as arquivo:
@@ -31,7 +31,7 @@ class Fase():
                     elif self.mapa[i][j] == 'E': 
                         self.clyde = Clyde([16 * j, 16 * i], jogo)
                     elif self.mapa[i][j] == '1': 
-                        self.walls.append(Wall([16 * j, 16 * i], jogo))
+                        self.paredes.append(Parede([16 * j, 16 * i], jogo))
 
 
     def draw(self, jogo):
@@ -40,4 +40,4 @@ class Fase():
         self.pinky.draw(jogo.tela)
         self.inky.draw(jogo.tela)
         self.clyde.draw(jogo.tela)
-        for wall in self.walls: wall.draw(jogo.tela)
+        for parede in self.paredes: parede.draw(jogo.tela)
