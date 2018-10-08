@@ -101,7 +101,7 @@ class Pacman(object):
                 if self.colisao(parede):
                     self.posicao[x] += self.velocidade
                     self.acao = Acao.Parado
-                    self.animacao.sprite_atual = 0
+                    self.animacao.sprite_atual = 1
                 else:
                     self.acao = Acao.AndarEsquerda
 
@@ -110,7 +110,7 @@ class Pacman(object):
                 if self.colisao(parede):
                     self.posicao[x] -= self.velocidade
                     self.acao = Acao.Parado
-                    self.animacao.sprite_atual = 1
+                    self.animacao.sprite_atual = 0
                 else:
                     self.acao = Acao.AndarDireita
 
@@ -125,9 +125,3 @@ class Pacman(object):
         
         # faco o teste de colisao do pacman com outro objeto
         return bool(bounding_box_self.colliderect(bounding_box_objeto))
-
-    def objetos_proximos(self, jogo):
-        # filtro as paredes pela localizacao do pacman, se ela estiver proxima, vou testar a colisao, senao ignoro
-        paredes_proximas = [parede_proxima for parede_proxima in jogo.fases[jogo.fase_atual].walls if parede_proxima.posicao_alvo(self) != "nao vizinho"]
-
-        return paredes_proximas
