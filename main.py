@@ -7,7 +7,7 @@ def main():
     pygame.init()
 
     # crio a janela com o nome pacman
-    tamanho_tela = (640, 495)
+    tamanho_tela = (1024, 768)
     tela = pygame.display.set_mode(tamanho_tela)
     pygame.display.set_caption("Pac-man!")
 

@@ -8,8 +8,8 @@ class Pacman(object):
         # posicoes do personagem na tela, a acao que ele esta fazendo e a velocidade de movimentacao
         self.posicao = posicao_personagem
         self.acao = Acao.Parado
-        self.velocidade = 1
-        self.dimensoes_bounding_box = (14, 14)
+        self.velocidade = 0.7
+        self.dimensoes_bounding_box = (13, 13)
 
         # carrego o sprite sheet inteiro.
         sprite_sheet = image.load("Graphics/sprite_sheet.png")
