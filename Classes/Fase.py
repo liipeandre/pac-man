@@ -43,6 +43,8 @@ class Fase():
                         self.clyde = Clyde([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
                     elif self.mapa[i][j] == '1': 
                         self.paredes.append(Parede([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo, self))
+                    elif self.mapa[i][j] == ' ':
+                        j += 2
 
 
     def draw(self, jogo):
