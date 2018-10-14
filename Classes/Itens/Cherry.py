@@ -5,6 +5,9 @@ from math import pi
 
 class Cherry(object):
     def __init__(self, posicao_elemento: tuple, jogo):
+        # defino a pontuacao do item
+        self.pontuacao = 100
+
         # posicoes do elemento na tela e a acao que ele esta fazendo
         self.posicao = posicao_elemento
         self.acao = Acao.Parado

@@ -19,3 +19,8 @@ class Parede(object):
         azul = (0, 120, 248)
         x, y = 0, 1
         draw.rect(tela, azul, [self.posicao[x], self.posicao[y], self.tamanho_quadro, self.tamanho_quadro], 1)
+
+    def bounding_box(self):
+        # apelido dos eixos 
+        x, y = 0, 1
+        return Rect(self.posicao[x], self.posicao[y], self.dimensoes_bounding_box[x], self.dimensoes_bounding_box[y])

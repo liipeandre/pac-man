@@ -9,8 +9,14 @@ from Classes.Fase import *
 
 class Game():
     def __init__(self, tela):
+        # pontuacao do jogo
+        self.pontuacao = 0
+        self.vidas = 2
+
         # variaveis de controle do jogo
         self.rodando = True
+        self.clock = time.Clock()
+        self.fps = 120
         self.tela = tela
         self.fase_atual = 0
         self.pontuacao = 0
@@ -20,34 +26,41 @@ class Game():
 
     def tratar_eventos(self):
         ''' Trata eventos do teclado '''
+        # apelido a fase atual
+        fase_atual = self.fases[self.fase_atual]
 
         # capturo as teclas presionadas
         event.pump()
         teclas = key.get_pressed()
 
         # faz a movimentacao do pacman
-        self.fases[self.fase_atual].pacman.move(teclas, self)
+        fase_atual.pacman.move(teclas, self)
 
 
     def atualizar_tela(self):
         ''' trata eventos visuais e sonoros (audio) '''
+        # apelido a fase atual
+        fase_atual = self.fases[self.fase_atual]
 
         # limpa a tela
         preto = (0, 0, 0)
         self.tela.fill(preto)
 
         # desenha a fase atual com elementos graficos (pontuacao, contador vidas, etc.)
-        self.fases[self.fase_atual].draw(self)
+        fase_atual.draw(self)
 
     def atualiza_estado_jogo(self):
         ''' atualiza estado do jogo (movimentacao da IA, logica de colisao, itens, pontuacao, etc.)'''
+        # apelido a fase atual
+        fase_atual = self.fases[self.fase_atual]
+
+        
 
         # movimenta os fantasmas a partir da IA.
-        self.fases[self.fase_atual].blinky.move(self)
-        self.fases[self.fase_atual].pinky.move(self)
-        self.fases[self.fase_atual].inky.move(self)
-        self.fases[self.fase_atual].clyde.move(self)
-
+        #fase_atual.blinky.move(self)
+        #fase_atual.pinky.move(self)
+        #fase_atual.inky.move(self)
+        #fase_atual.clyde.move(self)
         return
 
     def run(self):
@@ -63,3 +76,6 @@ class Game():
 
             # atualizar a tela, com os dados do buffer
             display.update()
+
+            # atualiza os fps
+            self.clock.tick(self.fps)

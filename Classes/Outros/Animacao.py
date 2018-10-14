@@ -12,6 +12,7 @@ class Acao(IntEnum):
     ComidoAndarBaixo = 7
     ComidoAndarDireita = 8
     ComidoAndarEsquerda = 9
+    Indefinida = 10
 
 
 class Animacao():

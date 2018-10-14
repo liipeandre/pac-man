@@ -39,6 +39,11 @@ class Clyde(object):
         # desenho a animação, dado o sprite atual e as dimensoes já armazenadas.
         self.animacao.draw(tela, self)
 
+    def bounding_box(self):
+        # apelido dos eixos 
+        x, y = 0, 1
+        return Rect(self.posicao[x], self.posicao[y], self.dimensoes_bounding_box[x], self.dimensoes_bounding_box[y])
+
     def move(self, teclas):
         # verifico as teclas de movimentacao do clyde
         '''if teclas[K_UP]:
