@@ -4,6 +4,9 @@ from Classes.Game import *
 
 class Pinky(object):
     def __init__(self, posicao_personagem: tuple, jogo):
+        # defino a pontuacao do item
+        self.pontuacao = 5000
+
         # posicoes do personagem na tela e a acao que ele esta fazendo
         self.posicao = posicao_personagem
         self.acao = Acao.Parado

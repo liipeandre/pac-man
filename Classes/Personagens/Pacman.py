@@ -48,11 +48,8 @@ class Pacman(object):
         # apelido dos eixos 
         x, y = 0, 1
 
-        # apelido da fase atual
-        fase_atual = jogo.fases[self.fase_atual]
-
         # ordena as paredes pela proximidade
-        fase_atual.paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.posicao[x]) +\
+        jogo.fase_atual.paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.posicao[x]) +\
                                                                       abs(elemento.posicao[y] - self.posicao[y]))     
 
         # guardo a acao anterior
@@ -135,9 +132,6 @@ class Pacman(object):
         
         # apelido dos eixos 
         x, y = 0, 1
-        
-        # apelido da fase atual
-        fase_atual = jogo.fases[self.fase_atual]
 
         # realizo o movimento
         if direcao == Acao.AndarCima:       self.posicao[y] -= self.velocidade   
@@ -151,7 +145,7 @@ class Pacman(object):
         # testo se há colisao
         # testo todas as paredes ao redor, verificando se houve colisao com alguma delas
         colisao = []
-        for parede in fase_atual.paredes[:limite_busca]:             
+        for parede in jogo.fase_atual.paredes[:limite_busca]:             
                 if self.bounding_box().colliderect(parede.bounding_box()): 
                     colisao.append(True)
                 

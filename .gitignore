@@ -105,4 +105,4 @@ venv.bak/
 
 # Visual studio files
 .sln
-.vs
+.vs\pac-man\v15\*.vs

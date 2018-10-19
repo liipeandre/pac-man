@@ -9,6 +9,8 @@ class Parede(object):
         # posicoes do elemento na tela e a acao que ele esta fazendo
         self.posicao = posicao_elemento
         self.acao = Acao.Parado
+
+        # tamanho de cada quadro (dimensoes da parede)
         self.tamanho_quadro = fase.tamanho_quadro
 
         # a dimensao da bounding box é igual ao tamanho do quadro da fase

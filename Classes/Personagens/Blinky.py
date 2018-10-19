@@ -4,6 +4,9 @@ from Classes.Game import *
 
 class Blinky(object):
     def __init__(self, posicao_personagem: tuple, jogo):
+        # defino a pontuacao do item
+        self.pontuacao = 5000
+
         # posicoes do personagem na tela e a acao que ele esta fazendo
         self.posicao = posicao_personagem
         self.acao = Acao.Parado
@@ -51,9 +54,9 @@ class Blinky(object):
         x, y = 0, 1
         
         # ordena as paredes pela proximidade
-        jogo.fases[jogo.fase_atual].paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.posicao[x]) +\
+        jogo.fase_atual.paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.posicao[x]) +\
                                                                       abs(elemento.posicao[y] - self.posicao[y]))     
-  
+
         # guardo a acao anterior
         acao_anterior = self.acao
 
@@ -145,7 +148,7 @@ class Blinky(object):
 
         # testo se há colisao
         colisao = []
-        for parede in jogo.fases[jogo.fase_atual].paredes[:limite_busca]:            
+        for parede in jogo.fase_atual.paredes[:limite_busca]:            
                 bounding_box_self, bounding_box_objeto = self.gera_bounding_box(parede)  
                 if bounding_box_self.colliderect(bounding_box_objeto): 
                     colisao.append(True)

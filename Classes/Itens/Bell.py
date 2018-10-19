@@ -4,7 +4,7 @@ from Classes.Game import *
 from math import pi
 
 class Bell(object):
-    def __init__(self, posicao_elemento: tuple, jogo):
+    def __init__(self, posicao_elemento: tuple):
         # defino a pontuacao do item
         self.pontuacao = 3000
 
@@ -27,3 +27,8 @@ class Bell(object):
     def draw(self, tela):
         # desenho a animação, dado o sprite atual e as dimensoes já armazenadas.
         self.animacao.draw(tela, self)
+
+    def bounding_box(self):
+        # apelido dos eixos 
+        x, y = 0, 1
+        return Rect(self.posicao[x], self.posicao[y], self.dimensoes_bounding_box[x], self.dimensoes_bounding_box[y])
