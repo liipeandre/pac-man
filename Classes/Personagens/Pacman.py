@@ -1,143 +1,118 @@
-from Classes.Outros.Animacao import *
-from pygame import *
-from Classes.Game import *
+from Classes.Outros.GameComponent import *
+from Classes.Outros.ElementosFase import *
 
-class Pacman(object):
-    def __init__(self, posicao_personagem: list, jogo):
-        # posicoes do personagem na tela, a acao que ele esta fazendo e a velocidade de movimentacao
-        self.posicao = posicao_personagem
-        self.acao = Acao.Parado
-        self.proxima_acao = Acao.Indefinida
-        self.velocidade = 1
-        self.dimensoes_bounding_box = (16, 16)
-
-        # carrego o sprite sheet inteiro.
-        sprite_sheet = image.load("Graphics/sprite_sheet.png")
-
-        # quebro em imagens menores (sprites do personagem, cada retangulo é um sprite, começando do zero)
-        dimensoes_sprites = [Rect(3, 90, 14, 14), Rect(20, 90, 12, 14), Rect(35, 90, 9, 14),\
-                             Rect(48, 90, 12, 14), Rect(63, 90, 9, 14), Rect(75, 92, 14, 12),\
-                             Rect(92, 95, 14, 9), Rect(109, 92, 14, 12), Rect(126, 95, 14, 9),\
-                             Rect(3, 112, 16, 7), Rect(22, 113, 16, 6), Rect(41, 114, 16, 5),\
-                             Rect(60, 114, 16, 5), Rect(79, 113, 16, 6), Rect(98, 113, 14, 6),\
-                             Rect(115, 112, 10, 7), Rect(128, 113, 6, 6), Rect(137, 113, 2, 6),\
-                             Rect(142, 109, 12, 10)]
-
-        # defino a sequencia de sprites para cada acao
-        sequencia_sprites = [[1, 3, 5, 7],\
-                             [5, 6, 5, 0],\
-                             [7, 8, 7, 0],\
-                             [1, 2, 1, 0],\
-                             [3, 4, 3, 0],\
-                             [x for x in range(9, 19)]]
-
-
-        # armazeno a animação do personagem
-        self.animacao = Animacao(dimensoes_sprites, sequencia_sprites)
-
-    def draw(self, tela):
-        # desenho a animação, dado o sprite atual e as dimensoes já armazenadas.
-        self.animacao.draw(tela, self)
+class Pacman(object, GameComponent):
+    """Personagem do jogo, controlado pelo jogador."""
+    def __init__(self, posicao: list):
+        # construtor base
+        super(Componente, self).__init__(posicao, "Pac-man.bmp")
 
     def bounding_box(self):
-        # apelido dos eixos 
-        x, y = 0, 1
-        return Rect(self.posicao[x], self.posicao[y], self.dimensoes_bounding_box[x], self.dimensoes_bounding_box[y])
+        return Rect(self.movimento.posicao, self.sprite.sprite_size)
 
-    def move(self, teclas, jogo):
+    
+    def move(selfelementos_fase: ElementosFase):
+        # capturo as teclas presionadas
+        event.pump()
+        teclas = key.get_pressed()
+
         # apelido dos eixos 
         x, y = 0, 1
 
         # ordena as paredes pela proximidade
-        jogo.fase_atual.paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.posicao[x]) +\
-                                                                      abs(elemento.posicao[y] - self.posicao[y]))     
+        elementos_fase.paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.movimento.posicao[x]) +\
+                                                                      abs(elemento.posicao[y] - self.movimento.posicao[y]))     
 
         # guardo a acao anterior
-        acao_anterior = self.acao
+        direcao_anterior = self.movimento.direcao_atual
 
         # se alguma tecla foi pressionada agora, proxima acao será ir na direcao da tecla.  
         if teclas[K_UP]:
-            self.proxima_acao = Acao.AndarCima
+            self.movimento.proxima_direcao = direcao.cima
 
         if teclas[K_DOWN]:
-            self.proxima_acao = Acao.AndarBaixo
+            self.movimento.proxima_direcao = direcao.baixo
 
         if teclas[K_LEFT]:
-            self.proxima_acao = Acao.AndarEsquerda
+            self.movimento.proxima_direcao = direcao.esquerda
 
         if teclas[K_RIGHT]:
-            self.proxima_acao = Acao.AndarDireita
+            self.movimento.proxima_direcao = direcao.direita
 
         # testo se é possível realizar a próxima acao agora
-        if not self.colisao(self.proxima_acao, jogo):
-            teste = self.colisao(self.proxima_acao, jogo)
-            if self.proxima_acao == Acao.AndarCima:
-                self.posicao[y] -= self.velocidade
-                self.acao = self.proxima_acao
-                self.proxima_acao = Acao.Indefinida
+        if not self.colisao(self.proxima_direcao, jogo):
+            if self.movimento.proxima_direcao == direcao.cima:
+                self.movimento.posicao[y] -= self.movimento.velocidade
+                self.movimento.direcao_atual = self.proxima_direcao
+                self.proxima_direcao = direcao.indefinida
 
-            elif self.proxima_acao == Acao.AndarBaixo:
-                self.posicao[y] += self.velocidade
-                self.acao = self.proxima_acao
-                self.proxima_acao = Acao.Indefinida
+            elif self.movimento.proxima_direcao == direcao.baixo:
+                self.movimento.posicao[y] += self.movimento.velocidade
+                self.movimento.direcao_atual = self.proxima_direcao
+                self.proxima_direcao = direcao.indefinida
 
-            elif self.proxima_acao == Acao.AndarEsquerda:
-                self.posicao[x] -= self.velocidade
-                self.acao = self.proxima_acao
-                self.proxima_acao = Acao.Indefinida
+            elif self.movimento.proxima_direcao == direcao.esquerda:
+                self.movimento.posicao[x] -= self.movimento.velocidade
+                self.movimento.direcao_atual = self.proxima_direcao
+                self.proxima_direcao = direcao.indefinida
 
-            elif self.proxima_acao == Acao.AndarDireita:
-                self.posicao[x] += self.velocidade
-                self.acao = self.proxima_acao
-                self.proxima_acao = Acao.Indefinida
+            elif self.movimento.proxima_direcao == direcao.direita:
+                self.movimento.posicao[x] += self.movimento.velocidade
+                self.movimento.direcao_atual = self.proxima_direcao
+                self.proxima_direcao = direcao.indefinida
             
-            if acao_anterior != self.acao:
-                self.animacao.sprite_atual = 0
+            # se algum teste acima foi valido, reseto a animação
+            if direcao_anterior != self.movimento.direcao_atual:
+                self.sprite.sprite_frame = [0, self.movimento.direcao_atual]
 
         # senao, realiza a mesma acao de antes, se não hove colisao com a parede
-        elif not self.colisao(acao_anterior, jogo):
-            if acao_anterior == Acao.AndarCima:
-                self.posicao[y] -= self.velocidade
-                self.acao = acao_anterior
+        elif not self.colisao(direcao_anterior, jogo):
+            if direcao_anterior == direcao.cima:
+                self.movimento.posicao[y] -= self.movimento.velocidade
+                self.movimento.direcao_atual = direcao_anterior
 
-            elif acao_anterior == Acao.AndarBaixo:
-                self.posicao[y] += self.velocidade
-                self.acao = acao_anterior
+            elif direcao_anterior == direcao.baixo:
+                self.movimento.posicao[y] += self.movimento.velocidade
+                self.movimento.direcao_atual = direcao_anterior
 
-            elif acao_anterior == Acao.AndarEsquerda:
-                self.posicao[x] -= self.velocidade
-                self.acao = acao_anterior
+            elif direcao_anterior == direcao.esquerda:
+                self.movimento.posicao[x] -= self.movimento.velocidade
+                self.movimento.direcao_atual = direcao_anterior
 
-            elif acao_anterior == Acao.AndarDireita:
-                self.posicao[x] += self.velocidade
-                self.acao = acao_anterior
+            elif direcao_anterior == direcao.direita:
+                self.movimento.posicao[x] += self.movimento.velocidade
+                self.movimento.direcao_atual = direcao_anterior
             
         # senao para o personagem
         else:
-            if self.acao == Acao.AndarCima:
-                self.animacao.sprite_atual = 2
-            elif self.acao == Acao.AndarBaixo:
-                self.animacao.sprite_atual = 3
-            elif self.acao == Acao.AndarEsquerda:
-                self.animacao.sprite_atual = 1
-            elif self.acao == Acao.AndarDireita:
-                self.animacao.sprite_atual = 0
-            self.acao = Acao.Parado
+            if self.movimento.direcao_atual == direcao.cima:
+                self.sprite.sprite_frame = [0, direcao.cima]
+
+            elif self.movimento.direcao_atual == direcao.baixo:
+                self.sprite.sprite_frame = [0, direcao.baixo]
+
+            elif self.movimento.direcao_atual == direcao.esquerda:
+                self.sprite.sprite_frame = [0, direcao.esquerda]
+
+            elif self.movimento.direcao_atual == direcao.direita:
+                self.sprite.sprite_frame = [0, direcao.direita]
+
+            self.movimento.estado = estado.parado
 
 
-    def colisao(self, direcao:Acao, jogo):
+    def colisao(self, direcao: direcao, elementos_fase: ElementosFase):
         # se a proxima acao for indefinida, retorno que houve colisao para não acontecer nada
-        if direcao not in [Acao.AndarCima, Acao.AndarBaixo, Acao.AndarEsquerda, Acao.AndarDireita]:
+        if direcao not in [direcao.cima, direcao.baixo, direcao.esquerda, direcao.direita]:
             return True
         
         # apelido dos eixos 
         x, y = 0, 1
 
         # realizo o movimento
-        if direcao == Acao.AndarCima:       self.posicao[y] -= self.velocidade   
-        elif direcao == Acao.AndarBaixo:    self.posicao[y] += self.velocidade 
-        elif direcao == Acao.AndarEsquerda: self.posicao[x] -= self.velocidade 
-        elif direcao == Acao.AndarDireita:  self.posicao[x] += self.velocidade 
+        if direcao == direcao.cima:       self.movimento.posicao[y] -= self.movimento.velocidade   
+        elif direcao == direcao.baixo:    self.movimento.posicao[y] += self.movimento.velocidade 
+        elif direcao == direcao.esquerda: self.movimento.posicao[x] -= self.movimento.velocidade 
+        elif direcao == direcao.direita:  self.movimento.posicao[x] += self.movimento.velocidade 
         
         # defino o limite de busca
         limite_busca = 4
@@ -145,14 +120,14 @@ class Pacman(object):
         # testo se há colisao
         # testo todas as paredes ao redor, verificando se houve colisao com alguma delas
         colisao = []
-        for parede in jogo.fase_atual.paredes[:limite_busca]:             
+        for parede in elementos_fase.paredes[:limite_busca]:             
                 if self.bounding_box().colliderect(parede.bounding_box()): 
                     colisao.append(True)
                 
         # desfaço o movimento
-        if direcao == Acao.AndarCima:       self.posicao[y] += self.velocidade   
-        elif direcao == Acao.AndarBaixo:    self.posicao[y] -= self.velocidade 
-        elif direcao == Acao.AndarEsquerda: self.posicao[x] += self.velocidade 
-        elif direcao == Acao.AndarDireita:  self.posicao[x] -= self.velocidade 
+        if direcao == direcao.cima:       self.movimento.posicao[y] += self.movimento.velocidade   
+        elif direcao == direcao.baixo:    self.movimento.posicao[y] -= self.movimento.velocidade 
+        elif direcao == direcao.esquerda: self.movimento.posicao[x] += self.movimento.velocidade 
+        elif direcao == direcao.direita:  self.movimento.posicao[x] -= self.movimento.velocidade 
 
         return colisao

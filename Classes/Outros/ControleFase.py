@@ -1,47 +1,46 @@
-from Classes.Outros.Animacao import *
+from Classes.Outros.GameComponent import *
+from Classes.Outros.ElementosFase import *
 from pygame import *
-from Classes.Game import *
-from math import pi
 from numpy import subtract
 
-class Pontuacao_e_Vidas(object):
-    def __init__(self, posicao_elemento: tuple, jogo):
-        # posicoes do elemento na tela e a acao que ele esta fazendo
+
+
+class ControleFase(object, GameComponent):
+    """ Realiza o controle da pontuação e das vidas. """
+    def __init__(self, posicao: list):
+        # cosntrutor base
+        super(GameComponent, self).__init__(posicao, "Nenhum", True)
+
+        # controle de fim de fase
+        self.fim_fase = False
+
+        # pontuacao e vidas da fase.
         self.pontuacao = 0
         self.vidas = 3
-        self.posicao = posicao_elemento
-        self.acao = Acao.Parado
 
-    def draw(self, tela):
-        # apelido dos eixos 
-        x, y = 0, 1
+    def __init__(self, posicao: list, controle_fase: ControleFase):
+        # cosntrutor base
+        super(GameComponent, self).__init__(posicao, "Nenhum", True)
 
-        # defino a fonte e o tamanho da fonte
-        cor = (255, 255, 255)
-        antialiasing = True
-        gerador_texto = font.SysFont('Comic Sans MS', 18)
+        # controle de fim de fase
+        self.fim_fase = False
 
-        # renderizo os textos em tela
-        texto1 = gerador_texto.render("Pontuação: " + str(self.pontuacao), antialiasing, cor)
-        texto2 = gerador_texto.render("Vidas: " + str(self.vidas), antialiasing, cor)
+        # pontuacao e vidas da fase.
+        self.pontuacao = controle_fase.pontuacao
+        self.vidas = controle_fase.vidas      
 
-        # desenho o texto na tela
-        tela.blit(texto1, [self.posicao[x], self.posicao[y], 30, 30])
-        tela.blit(texto2, [self.posicao[x], self.posicao[y] + 30, 30, 30])
-
-    def sistema_pontuacao(self, jogo):
+    def sistema_itens_pontuacao(self, elementos_fase: ElementosFase):
         # apelido dos eixos 
         x, y = 0, 1
 
         # ordena os pacdots pela proximidade
-        jogo.fase_atual.pacdots.sort(key=lambda elemento: abs(elemento.posicao[x] - jogo.fase_atual.pacman.posicao[x]) +\
-                                                                      abs(elemento.posicao[y] - jogo.fase_atual.pacman.posicao[y]))
+        elementos_fase.pacdots.sort(key=lambda elemento: abs(elemento.posicao[x] - self.movimento.posicao[x]) +\
+                                                                      abs(elemento.posicao[y] - self.movimento.posicao[y]))
 
-        # verifica se pacman colidiu com algum item (itens, pacdots e powerpills)
+        # verifica se pacman colidiu com algum objeto (itens, pacdots e powerpills)
         # se colidiu, incrementa a pontuacao e exclui o item
         # copy() serve para iterar uma cópia da lista, pois não posso iterar e alterar a própria lista
-        # testa se houve colisao com os itens, pacdots e outro elementos do jogo
-        if jogo.fase_atual.item is not None and jogo.fase_atual.pacman.bounding_box().colliderect(jogo.fase_atual.item.bounding_box()):
+        if elementos_fase.item is not None and elementos_fase.pacman.bounding_box().colliderect(elementos_fase.item.bounding_box()):
 
             # incrementa pontuacao
             jogo.pontuacao_e_vidas.pontuacao += jogo.fase_atual.item.pontuacao
