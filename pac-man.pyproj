@@ -19,43 +19,31 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Classes\Fase.py">
+    <Compile Include="Classes\Fase.py" />
+    <Compile Include="Classes\Outros\ElementosFase.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\Itens\Apple.py">
+    <Compile Include="Classes\Outros\GeradorItens.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\Itens\Bell.py">
+    <Compile Include="Classes\Outros\MapLoader.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\Itens\Chave.py">
+    <Compile Include="Classes\Outros\Objeto.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\Itens\Cherry.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Itens\Melon.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Itens\GalaxyBoss.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Itens\Orange.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Itens\Strawberry.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Itens\Pacdot.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Itens\PowerPill.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Classes\Itens\__init__.py" />
-    <Compile Include="Classes\Outros\Animacao.py" />
     <Compile Include="Classes\Game.py" />
+    <Compile Include="Classes\Outros\Movimento.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Classes\Outros\ControleFase.py" />
+    <Compile Include="Classes\Outros\Sprite.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Classes\Outros\__init__.py" />
+    <Compile Include="Classes\Outros\GameComponent.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Classes\Personagens\Blinky.py">
       <SubType>Code</SubType>
     </Compile>
@@ -65,11 +53,13 @@
     <Compile Include="Classes\Personagens\Inky.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\Personagens\Pacman.py" />
-    <Compile Include="Classes\Personagens\Pinky.py" />
+    <Compile Include="Classes\Personagens\Pacman.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Classes\Personagens\Pinky.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Classes\Personagens\__init__.py" />
-    <Compile Include="Classes\Tiles\Parede.py" />
-    <Compile Include="Classes\Tiles\__init__.py" />
     <Compile Include="Classes\__init__.py" />
     <Compile Include="main.py" />
   </ItemGroup>
@@ -84,8 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />
-    <Folder Include="Classes\Itens\" />
-    <Folder Include="Classes\Tiles\" />
     <Folder Include="Classes\Outros\" />
     <Folder Include="Classes\Personagens\" />
     <Folder Include="Graphics" />

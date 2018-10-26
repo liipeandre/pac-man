@@ -1,51 +1,46 @@
 from pygame import *
-from Classes.Personagens.Pacman import *
-from Classes.Personagens.Blinky import *
-from Classes.Personagens.Pinky import *
-from Classes.Personagens.Inky import *
-from Classes.Personagens.Clyde import *
-from Classes.Tiles.Parede import *
+from Classes.Outros.ElementosFase import *
+from Classes.Outros.ControleFase import *
+from Classes.Outros.MapLoader import *
+from Classes.Outros.GeradorItens import *
 
 class Fase():
-    def __init__(self, nome_fase:str, jogo):
-        # listas de elementos do jogo
-        self.pacman = None
-        self.blinky = None
-        self.pinky = None
-        self.inky = None
-        self.clyde = None
-        self.paredes = []
-        self.lista_itens = []
-        
-        # espacamento entre 2 elementos do jogo
-        self.tamanho_quadro = 18
+    def __init__(self, nome_fase:str):
+        # dados de controle da fase
+        self.controle_fase = ControleFase([460, 200])
+        self.elementos_fase = ElementosFase()
+        self.carregador_mapa = MapLoader(nome_fase, self.elementos_fase)
+        self.gerador_itens = GeradorItens()
 
-        # carrego o mapa a partir do arquivo
-        with open("Maps/" + nome_fase + ".txt", "r") as arquivo:
-            self.mapa = arquivo.readlines()
-            for i in range(len(self.mapa)):
-                for j in range(len(self.mapa[i])):
-                    if self.mapa[i][j] == 'A': 
-                        self.pacman = Pacman([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
-                    elif self.mapa[i][j] == 'B': 
-                        self.blinky = Blinky([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
-                    elif self.mapa[i][j] == 'C': 
-                        self.pinky = Pinky([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
-                    elif self.mapa[i][j] == 'D': 
-                        self.inky = Inky([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
-                    elif self.mapa[i][j] == 'E': 
-                        self.clyde = Clyde([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo)
-                    elif self.mapa[i][j] == '1': 
-                        self.paredes.append(Parede([self.tamanho_quadro * j, self.tamanho_quadro * i], jogo, self))
-                    elif self.mapa[i][j] == ' ':
-                        j += 2
+    def __init__(self, nome_fase:str, controle_fase: ControleFase):
+        # dados de controle da fase
+        self.controle_fase = ControleFase([460, 200], controle_fase)
+        self.elementos_fase = ElementosFase()
+        self.carregador_mapa = MapLoader(nome_fase, self.elementos_fase)
+        self.gerador_itens = GeradorItens()
 
+    def draw(self, tela):
+        # desenha os personagens do jogo em tela
+        self.pacman.sprite.draw(tela)
+        self.blinky.sprite.draw(tela)
+        self.pinky.sprite.draw(tela)
+        self.inky.sprite.draw(tela)
+        self.clyde.sprite.draw(tela)
 
-    def draw(self, jogo):
-        # desenha os elementos do jogo em tela
-        self.pacman.draw(jogo.tela)
-        self.blinky.draw(jogo.tela)
-        self.pinky.draw(jogo.tela)
-        self.inky.draw(jogo.tela)
-        self.clyde.draw(jogo.tela)
-        for parede in self.paredes: parede.draw(jogo.tela)
+        # desenha as paredes da fase
+        for parede in self.paredes: parede.sprite.draw(tela)
+
+        # desenha a pontuacao
+        jogo.pontuacao_e_vidas.draw(tela)
+
+        # desenha o item
+        if self.item is not None: self.item.sprite.draw(tela) 
+
+        # desenha as pacdots
+        for pacdot in self.pacdots: pacdot.sprite.draw(tela)
+
+        # desenha as powerpills
+        for powerpill in self.powerpills: powerpill.sprite.draw(tela)
+
+        # desenha a chave
+        if self.chave is not None: self.chave.sprite.draw(tela)
