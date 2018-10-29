@@ -64,23 +64,69 @@
     <Compile Include="main.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Graphics\sprite_sheet.png" />
-    <Content Include="Maps\canvas.png" />
-    <Content Include="Maps\canvas2.png" />
-    <Content Include="Maps\canvas3.png" />
-    <Content Include="Maps\Map01.txt" />
-    <Content Include="Maps\Map02.txt" />
-    <Content Include="Maps\Map03.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Classes" />
     <Folder Include="Classes\Outros\" />
     <Folder Include="Classes\Personagens\" />
-    <Folder Include="Graphics" />
-    <Folder Include="Maps" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\Audio\" />
+    <Folder Include="Data\Graphics\" />
+    <Folder Include="Data\Maps\" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\Audio\blue_ghost_appears.wav" />
+    <Content Include="Data\Audio\bounce.wav" />
+    <Content Include="Data\Audio\bull_charger_charging.wav" />
+    <Content Include="Data\Audio\coin_credit.wav" />
+    <Content Include="Data\Audio\crash_into_wall.wav" />
+    <Content Include="Data\Audio\extra_life.wav" />
+    <Content Include="Data\Audio\final_boss_hammer.wav" />
+    <Content Include="Data\Audio\final_boss_malfunction.wav" />
+    <Content Include="Data\Audio\fruit_eaten.wav" />
+    <Content Include="Data\Audio\ghosts_ambient.wav" />
+    <Content Include="Data\Audio\ghosts_ambient_scared1.wav" />
+    <Content Include="Data\Audio\ghosts_ambient_scared2.wav" />
+    <Content Include="Data\Audio\ghosts_frightened.wav" />
+    <Content Include="Data\Audio\ghosts_laugh1.wav" />
+    <Content Include="Data\Audio\ghosts_laugh2.wav" />
+    <Content Include="Data\Audio\ghost_dazed.wav" />
+    <Content Include="Data\Audio\ghost_eaten.wav" />
+    <Content Include="Data\Audio\ghost_large_eaten.wav" />
+    <Content Include="Data\Audio\ghost_large_regenerate.wav" />
+    <Content Include="Data\Audio\ghost_regenerate.wav" />
+    <Content Include="Data\Audio\ghost_touched.wav" />
+    <Content Include="Data\Audio\item_appear1.wav" />
+    <Content Include="Data\Audio\item_appear2.wav" />
+    <Content Include="Data\Audio\jump_pad.wav" />
+    <Content Include="Data\Audio\life_lost.wav" />
+    <Content Include="Data\Audio\ow1.wav" />
+    <Content Include="Data\Audio\ow2.wav" />
+    <Content Include="Data\Audio\pacdot_spitter.wav" />
+    <Content Include="Data\Audio\pacman_beginning.wav" />
+    <Content Include="Data\Audio\pacman_death.wav" />
+    <Content Include="Data\Audio\powerup.wav" />
+    <Content Include="Data\Audio\power_pellet_eaten.wav" />
+    <Content Include="Data\Audio\respawn.wav" />
+    <Content Include="Data\Audio\speed_pad.wav" />
+    <Content Include="Data\Audio\unknown.wav" />
+    <Content Include="Data\Audio\wakka_wakka1.wav" />
+    <Content Include="Data\Audio\wakka_wakka2.wav" />
+    <Content Include="Data\Audio\wakka_wakka3.wav" />
+    <Content Include="Data\Audio\wakka_wakka4.wav" />
+    <Content Include="Data\Audio\wakka_wakka5.wav" />
+    <Content Include="Data\Audio\whirring1.wav" />
+    <Content Include="Data\Audio\whirring2.wav" />
+    <Content Include="Data\Graphics\Blinky.bmp" />
+    <Content Include="Data\Graphics\Clyde.bmp" />
+    <Content Include="Data\Graphics\Inky.bmp" />
+    <Content Include="Data\Graphics\Items.bmp" />
+    <Content Include="Data\Graphics\Pac-man.bmp" />
+    <Content Include="Data\Graphics\Pinky.bmp" />
+    <Content Include="Data\Maps\Map01.txt" />
+    <Content Include="Data\Maps\Map02.txt" />
+    <Content Include="Data\Maps\Map03.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

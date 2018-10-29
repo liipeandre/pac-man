@@ -1,9 +1,6 @@
 from Classes.Outros.GameComponent import *
 from Classes.Outros.ElementosFase import *
-from pygame import *
-from numpy import subtract
-
-
+from Classes.Outros.Objeto import *
 
 class ControleFase(object, GameComponent):
     """ Realiza o controle da pontuação e das vidas. """
@@ -43,26 +40,26 @@ class ControleFase(object, GameComponent):
         if elementos_fase.item is not None and elementos_fase.pacman.bounding_box().colliderect(elementos_fase.item.bounding_box()):
 
             # incrementa pontuacao
-            jogo.pontuacao_e_vidas.pontuacao += jogo.fase_atual.item.pontuacao
+            self.pontuacao += elementos_fase.item.pontuacao
 
             # exclui o item
-            jogo.fase_atual.item = None
+            elementos_fase.item = None
         
-        for pacdot in jogo.fase_atual.pacdots[:5].copy():
-            if jogo.fase_atual.pacman.bounding_box().colliderect(pacdot.bounding_box()):
+        for pacdot in elementos_fase.pacdots[:5].copy():
+            if elementos_fase.pacman.bounding_box().colliderect(pacdot.bounding_box()):
 
                 # incrementa pontuacao
-                jogo.pontuacao_e_vidas.pontuacao += pacdot.pontuacao
+                self.pontuacao += pacdot.pontuacao
 
                 # exclui a pacdot
-                jogo.fase_atual.pacdots.remove(pacdot)
+                elementos_fase.pacdots.remove(pacdot)
 
         # se o pacman colidiu com uma powerpill, incrementa a pontuacao e muda o estado dos fantasmas
-        for powerpill in jogo.fase_atual.powerpills.copy():
-            if jogo.fase_atual.pacman.bounding_box().colliderect(powerpill.bounding_box()):
+        for powerpill in elementos_fase.powerpills.copy():
+            if elementos_fase.pacman.bounding_box().colliderect(powerpill.bounding_box()):
 
                 # incrementa pontuacao
-                jogo.pontuacao_e_vidas.pontuacao += powerpill.pontuacao
+                self.pontuacao += powerpill.pontuacao
 
                 # muda o estado dos fantasmas
                 jogo.fase_atual.blinky.acao = Acao.ModoFugaouMorte
@@ -71,14 +68,14 @@ class ControleFase(object, GameComponent):
                 jogo.fase_atual.clyde.acao = Acao.ModoFugaouMorte
 
                 # exclui a powerpill
-                jogo.fase_atual.powerpills.remove(powerpill)
+                elementos_fase.powerpills.remove(powerpill)
 
         # se acabou os pacdots, insere a chave para passar de fase
-        if not jogo.fase_atual.pacdots and jogo.fase_atual.chave is None:
-            jogo.fase_atual.chave = Chave(jogo.fase_atual.posicao_chave)
+        if not elementos_fase.pacdots and elementos_fase.chave is None:
+            elementos_fase.chave = Objeto(elementos_fase.posicao_chave, "key")
 
         # se pacman colidir com uma chave, ele passa de fase e incrementa pontuacao
-        if jogo.fase_atual.chave is not None and jogo.fase_atual.pacman.bounding_box().colliderect(jogo.fase_atual.chave.bounding_box()):
-            jogo.pontuacao_e_vidas.pontuacao += jogo.fase_atual.chave.pontuacao
-            jogo.fase_atual.fim_fase = True
-            jogo.fase_atual.chave = None
+        if elementos_fase.chave is not None and elementos_fase.pacman.bounding_box().colliderect(elementos_fase.chave.bounding_box()):
+            self.pontuacao += elementos_fase.chave.pontuacao
+            self.fim_fase = True
+            elementos_fase.chave = None
