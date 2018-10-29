@@ -1,17 +1,18 @@
-from Classes.Outros.GameComponent import *
-from Classes.Outros.ElementosFase import *
+from Libraries import Rect, event, key, K_UP, K_DOWN, K_LEFT, K_RIGHT
+from Classes.Outros.GameComponent import GameComponent
+from Classes.Outros.Movimento import *
+from Classes.Outros.Sprite import Sprite
 
-class Pacman(object, GameComponent):
+class Pacman(GameComponent):
     """Personagem do jogo, controlado pelo jogador."""
     def __init__(self, posicao: list):
         # construtor base
-        super(Componente, self).__init__(posicao, "Pac-man.bmp")
+        super().__init__(posicao, "Pac-man.bmp")
 
     def bounding_box(self):
         return Rect(self.movimento.posicao, self.sprite.sprite_size)
 
-    
-    def move(selfelementos_fase: ElementosFase):
+    def move(self, elementos_fase):
         # capturo as teclas presionadas
         event.pump()
         teclas = key.get_pressed()
@@ -20,8 +21,8 @@ class Pacman(object, GameComponent):
         x, y = 0, 1
 
         # ordena as paredes pela proximidade
-        elementos_fase.paredes.sort(key=lambda elemento: abs(elemento.posicao[x] - self.movimento.posicao[x]) +\
-                                                                      abs(elemento.posicao[y] - self.movimento.posicao[y]))     
+        elementos_fase.paredes.sort(key=lambda elemento: abs(elemento.movimento.posicao[x] - self.movimento.posicao[x]) +\
+                                                                      abs(elemento.movimento.posicao[y] - self.movimento.posicao[y]))     
 
         # guardo a acao anterior
         direcao_anterior = self.movimento.direcao_atual
@@ -40,25 +41,25 @@ class Pacman(object, GameComponent):
             self.movimento.proxima_direcao = direcao.direita
 
         # testo se é possível realizar a próxima acao agora
-        if not self.colisao(self.proxima_direcao, jogo):
+        if not self.colisao(self.movimento.proxima_direcao, elementos_fase):
             if self.movimento.proxima_direcao == direcao.cima:
                 self.movimento.posicao[y] -= self.movimento.velocidade
-                self.movimento.direcao_atual = self.proxima_direcao
+                self.movimento.direcao_atual = self.movimento.proxima_direcao
                 self.proxima_direcao = direcao.indefinida
 
             elif self.movimento.proxima_direcao == direcao.baixo:
                 self.movimento.posicao[y] += self.movimento.velocidade
-                self.movimento.direcao_atual = self.proxima_direcao
+                self.movimento.direcao_atual = self.movimento.proxima_direcao
                 self.proxima_direcao = direcao.indefinida
 
             elif self.movimento.proxima_direcao == direcao.esquerda:
                 self.movimento.posicao[x] -= self.movimento.velocidade
-                self.movimento.direcao_atual = self.proxima_direcao
+                self.movimento.direcao_atual = self.movimento.proxima_direcao
                 self.proxima_direcao = direcao.indefinida
 
             elif self.movimento.proxima_direcao == direcao.direita:
                 self.movimento.posicao[x] += self.movimento.velocidade
-                self.movimento.direcao_atual = self.proxima_direcao
+                self.movimento.direcao_atual = self.movimento.proxima_direcao
                 self.proxima_direcao = direcao.indefinida
             
             # se algum teste acima foi valido, reseto a animação
@@ -66,7 +67,7 @@ class Pacman(object, GameComponent):
                 self.sprite.sprite_frame = [0, self.movimento.direcao_atual]
 
         # senao, realiza a mesma acao de antes, se não hove colisao com a parede
-        elif not self.colisao(direcao_anterior, jogo):
+        elif not self.colisao(direcao_anterior, elementos_fase):
             if direcao_anterior == direcao.cima:
                 self.movimento.posicao[y] -= self.movimento.velocidade
                 self.movimento.direcao_atual = direcao_anterior
@@ -100,7 +101,7 @@ class Pacman(object, GameComponent):
             self.movimento.estado = estado.parado
 
 
-    def colisao(self, direcao: direcao, elementos_fase: ElementosFase):
+    def colisao(self, direcao: direcao, elementos_fase):
         # se a proxima acao for indefinida, retorno que houve colisao para não acontecer nada
         if direcao not in [direcao.cima, direcao.baixo, direcao.esquerda, direcao.direita]:
             return True

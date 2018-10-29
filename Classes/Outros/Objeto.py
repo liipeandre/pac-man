@@ -1,6 +1,7 @@
-from Classes.Outros.GameComponent import *
+from Libraries import Rect
+from Classes.Outros.GameComponent import GameComponent
 
-class Objeto(object, GameComponent):
+class Objeto(GameComponent):
     """Classe que representa os elementos fixos do jogo (itens e a parede)."""
     def __init__(self, posicao: list, tipo_item: str):
 
@@ -8,46 +9,46 @@ class Objeto(object, GameComponent):
         # chama o construtor base, passando parâmetros exclusivo para cada tipo de objeto.
         if tipo_item == "cherry":
             self.pontuacao = 100
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 0))
+            super().__init__(posicao, "Items.bmp", (0, 0))
         
         elif tipo_item == "strawberry":
             self.pontuacao = 300
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 1))
+            super().__init__(posicao, "Items.bmp", (1, 0))
 
-        elif tipo_item == "orange":
+        elif tipo_item == "orange": 
             self.pontuacao = 500
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 2))
+            super().__init__(posicao, "Items.bmp", (2, 0))
 
-        elif tipo_item == "apple":
+        elif tipo_item == "apple": 
             self.pontuacao = 700
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 3))
+            super().__init__(posicao, "Items.bmp", (3, 0))
 
-        elif tipo_item == "melon":
+        elif tipo_item == "melon": 
             self.pontuacao = 1000
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 4))
+            super().__init__(posicao, "Items.bmp", (4, 0))
 
-        elif tipo_item == "galaxy boss":
+        elif tipo_item == "galaxy boss": 
             self.pontuacao = 2000
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 5))
+            super().__init__(posicao, "Items.bmp", (5, 0))
 
         elif tipo_item == "bell":
             self.pontuacao = 3000
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 6))
+            super().__init__(posicao, "Items.bmp", (6, 0))
 
-        elif tipo_item == "key":
+        elif tipo_item == "key": 
             self.pontuacao = 5000
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 7))
+            super().__init__(posicao, "Items.bmp", (7, 0))
 
-        elif tipo_item == "pacdot":
+        elif tipo_item == "pacdot": 
             self.pontuacao = 10
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 8))
+            super().__init__(posicao, "Items.bmp", (8, 0))
 
-        elif tipo_item == "powerpill":
+        elif tipo_item == "powerpill": 
             self.pontuacao = 50
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 9))
+            super().__init__(posicao, "Items.bmp", (9, 0))
 
         elif tipo_item == "wall": 
-            super(GameComponent, self).__init__(posicao, "Items.bmp", (0, 10))
+            super().__init__(posicao, "Items.bmp", (10, 0))
 
 
     def bounding_box(self):

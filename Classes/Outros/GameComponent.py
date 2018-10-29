@@ -1,3 +1,4 @@
+from Libraries import Rect
 from Classes.Outros.Sprite import *
 from Classes.Outros.Movimento import *
 
@@ -9,16 +10,8 @@ class GameComponent(object):
 
         Em ambos, o construtor recebe um booleano (desenha pontuacao), para desenhar a pontuacao e as vidas em tela, quando indicado, no lugar do sprite.
     """
-    def __init__(self, posicao: list, sprite_sheet_file: str):
-        self.sprite = Sprite(self, sprite_sheet_file)
-        self.movimento = Movimento(posicao)
-
-    def __init__(self, posicao: list, sprite_sheet_file: str, sprite_frame):
-        self.sprite = Sprite(self, sprite_sheet_file, sprite_frame)
-        self.movimento = Movimento(posicao)
-
-    def __init__(self, posicao: list, sprite_sheet_file: str, desenha_pontuacao=False):
-        self.sprite = Sprite(self, sprite_sheet_file, desenha_pontuacao)
+    def __init__(self, posicao: list, sprite_sheet_file: str, sprite_frame=None, desenha_pontuacao=False):
+        self.sprite = Sprite(self, sprite_sheet_file, sprite_frame, desenha_pontuacao)
         self.movimento = Movimento(posicao)
 
     def bounding_box(self):
