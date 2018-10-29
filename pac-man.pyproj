@@ -61,10 +61,12 @@
     </Compile>
     <Compile Include="Classes\Personagens\__init__.py" />
     <Compile Include="Classes\__init__.py" />
+    <Compile Include="Libraries.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Graphics\sprite_sheet.png" />
     <Content Include="Maps\canvas.png" />
     <Content Include="Maps\canvas2.png" />
     <Content Include="Maps\canvas3.png" />
@@ -76,7 +78,6 @@
     <Folder Include="Classes" />
     <Folder Include="Classes\Outros\" />
     <Folder Include="Classes\Personagens\" />
-    <Folder Include="Graphics" />
     <Folder Include="Maps" />
   </ItemGroup>
   <ItemGroup>

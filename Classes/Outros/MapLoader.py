@@ -1,15 +1,15 @@
-from Classes.Outros.ElementosFase import *
-from Classes.Outros.Objeto import *
-from Classes.Personagens.Pacman import *
-from Classes.Personagens.Blinky import *
-from Classes.Personagens.Pinky import *
-from Classes.Personagens.Inky import *
-from Classes.Personagens.Clyde import *
+from Classes.Outros.Objeto import Objeto
+from Classes.Personagens.Pacman import Pacman
+from Classes.Personagens.Blinky import Blinky
+from Classes.Personagens.Pinky import Pinky
+from Classes.Personagens.Inky import Inky
+from Classes.Personagens.Clyde import Clyde
+
 
 class MapLoader(object):
     """ Carrega as fases a partir do arquivo."""
 
-    def __init__(elementos_fase, nome_fase:str, elementos_fase: ElementosFase):
+    def __init__(self, nome_fase:str, elementos_fase):
         # apelido dos eixos
         x, y = 0, 1
         

@@ -1,12 +1,5 @@
-from pygame import *
-from Classes.Personagens.Pacman import *
-from Classes.Personagens.Blinky import *
-from Classes.Personagens.Pinky import *
-from Classes.Personagens.Inky import *
-from Classes.Personagens.Clyde import *
-from Classes.Tiles.Parede import *
+from Libraries import *
 from Classes.Fase import *
-from Classes.Outros.ControleFase import *
 
 class Game():
     def __init__(self, tela):
@@ -39,7 +32,7 @@ class Game():
                     if evento.type == sortear_item:
 
                         # sorteia o item
-                        self.fase_atual.gerador_itens()
+                        self.fase_atual.gerador_itens.sortear(self.fase_atual.elementos_fase)
 
                 # trata eventos do teclado.
                 self.tratar_eventos()
@@ -62,12 +55,13 @@ class Game():
 
             # senão adiciona uma nova fase aleatoriamente e vai para a proxima.
             else:
-                self.fase_atual = Fase(choice(self.lista_fases), self.fase_atual.controle_fase)
+                self.fase_atual = Fase(choice(self.lista_fases), self.fase_atual.elementos_fase)
 
 
 
     def tratar_eventos(self):
         ''' Trata eventos do jogo'''
+        sortear_item = USEREVENT + 1
         for evento in event.get():
 
             # sorteia o item, se evento acontecer
@@ -90,11 +84,11 @@ class Game():
     def atualiza_estado_jogo(self):
         ''' atualiza estado do jogo (movimentacao da IA, logica de colisao, itens, pontuacao, etc.)'''
         # movimenta os personagens e os fantasmas.
-        self.fase_atual.pacman.move(self.fase_atual.elementos_fase)
-        self.fase_atual.blinky.move(self.fase_atual.elementos_fase)
-        self.fase_atual.pinky.move(self.fase_atual.elementos_fase)
-        self.fase_atual.inky.move(self.fase_atual.elementos_fase)
-        self.fase_atual.clyde.move(self.fase_atual.elementos_fase)
+        self.fase_atual.elementos_fase.pacman.move(self.fase_atual.elementos_fase)
+        self.fase_atual.elementos_fase.blinky.move(self.fase_atual.elementos_fase)
+        self.fase_atual.elementos_fase.pinky.move(self.fase_atual.elementos_fase)
+        self.fase_atual.elementos_fase.inky.move(self.fase_atual.elementos_fase)
+        self.fase_atual.elementos_fase.clyde.move(self.fase_atual.elementos_fase)
 
         # sistema de colisao com itens e pontuacao
         self.fase_atual.controle_fase.sistema_itens_pontuacao(self.fase_atual.elementos_fase)

@@ -1,7 +1,5 @@
-from Classes.Fase import *
-from Classes.Outros.Objeto import *
-from Classes.Outros.ElementosFase import *
-from random import shuffle, choice
+from Libraries import shuffle, choice
+from Classes.Outros.Objeto import Objeto
 
 class GeradorItens(object):
     """ Sorteia itens que aparecerão de tempos em tempos. """
@@ -12,8 +10,9 @@ class GeradorItens(object):
         self.tipo_fichas = ["nenhum", "cherry", "strawberry", "orange", "apple", "melon", "galaxy boss", "bell"]
 
 
-    def sortear(self, elementos_fase: ElementosFase):
+    def sortear(self, elementos_fase):
         # crio uma lista de fichas
+        fichas = []
         for num_fichas, tipo_ficha in zip(self.num_fichas, self.tipo_fichas):
             fichas += [tipo_ficha] * num_fichas
 
