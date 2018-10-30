@@ -1,4 +1,5 @@
 from Classes.Outros.GameComponent import GameComponent
+from copy import deepcopy
 
 class ControleFase(GameComponent):
     """ Realiza o controle da pontuação e das vidas. """
@@ -40,7 +41,7 @@ class ControleFase(GameComponent):
             # exclui o item
             elementos_fase.item = None
         
-        for pacdot in elementos_fase.pacdots[:7].copy():
+        for pacdot in elementos_fase.pacdots.copy():
             if elementos_fase.pacman.bounding_box().colliderect(pacdot.bounding_box()):
 
                 # incrementa pontuacao
@@ -49,6 +50,9 @@ class ControleFase(GameComponent):
                 # exclui a pacdot
                 elementos_fase.pacdots.remove(pacdot)
 
+                # sai do laço
+                break
+        
         # se o pacman colidiu com uma powerpill, incrementa a pontuacao e muda o estado dos fantasmas
         for powerpill in elementos_fase.powerpills.copy():
             if elementos_fase.pacman.bounding_box().colliderect(powerpill.bounding_box()):
@@ -64,6 +68,9 @@ class ControleFase(GameComponent):
 
                 # exclui a powerpill
                 elementos_fase.powerpills.remove(powerpill)
+
+                # sai do laço
+                break
 
         # se acabou os pacdots, insere a chave para passar de fase
         if not elementos_fase.pacdots and elementos_fase.chave is None:

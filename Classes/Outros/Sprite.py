@@ -1,4 +1,5 @@
 from Libraries import Rect, image, font
+from Classes.Outros.Movimento import *
 
 class Sprite(object):
     """ Classe que mantém os elementos pertencentes a parte de animação e desenho. Possui 2 construtores.
@@ -12,6 +13,7 @@ class Sprite(object):
     def __init__(self, game_component, sprite_sheet_file: str, sprite_frame=None, desenha_pontuacao=False):
         # referencia para o component, que contem o sprite (composicao - POO)
         self.game_component = game_component
+        print(type(self.game_component))
 
         # define se será desenhado a pontuacao (padrão é igual a falso)
         self.desenha_pontuacao = desenha_pontuacao
@@ -35,10 +37,6 @@ class Sprite(object):
 
             # sprite sheet do personagem
             self.sprite_sheet = image.load("Data/Graphics/" + sprite_sheet_file)
-
-            
-
-
 
     def draw(self, tela):
         # apelido dos eixos
@@ -71,3 +69,9 @@ class Sprite(object):
             tela.blit(self.sprite_sheet,\
                       self.game_component.movimento.posicao,\
                       dimensoes_sprite)
+
+
+    def resetar_animacao(self):
+        if type(self.game_component) == Pacman:
+            if self.game_component.movimento.direcao_atual == direcao.cima:
+                return

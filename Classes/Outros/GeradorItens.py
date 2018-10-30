@@ -21,4 +21,4 @@ class GeradorItens(object):
         tipo_item = choice(fichas)
 
         # crio o item sorteado
-        if tipo_item != "nenhum": elementos_fase.item = Objeto(self.posicao_itens, tipo_item)
+        if tipo_item != "nenhum": elementos_fase.item = Objeto(elementos_fase.posicao_itens, tipo_item)
