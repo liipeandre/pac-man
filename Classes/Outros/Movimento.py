@@ -3,7 +3,10 @@ from enum import IntEnum
 class estado(IntEnum):
     parado = 0
     andando = 1
-    morto = 2
+    modo_fuga = 2
+    morrendo = 3
+    morto = 4
+    
 
 class direcao(IntEnum):
     cima = 0
@@ -20,4 +23,4 @@ class Movimento(object):
         self.estado = estado.parado
         self.direcao_atual = direcao.cima
         self.proxima_direcao = direcao.cima
-        self.velocidade = 1
+        self.velocidade = 4

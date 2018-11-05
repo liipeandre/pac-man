@@ -31,19 +31,24 @@ class MapLoader(object):
                     # pacman e fantasmas
                     if   mapa[i][j] == 'A': 
                         elementos_fase.pacman = Pacman([sprite_size[x] * j, sprite_size[y] * i])
+                        elementos_fase.posicao_inicial_pacman = [sprite_size[x] * j, sprite_size[y] * i]
 
                     elif mapa[i][j] == 'B': 
                         elementos_fase.blinky = Blinky([sprite_size[x] * j, sprite_size[y] * i])
+                        elementos_fase.posicao_inicial_blinky = [sprite_size[x] * j, sprite_size[y] * i]
 
                     elif mapa[i][j] == 'C': 
                         elementos_fase.pinky  = Pinky([sprite_size[x] * j, sprite_size[y] * i])
-                        elementos_fase.casa_fantasmas = (sprite_size[x] * j, sprite_size[y] * i)
+                        elementos_fase.casa_fantasmas = [sprite_size[x] * j, sprite_size[y] * i]
+                        elementos_fase.posicao_inicial_pinky = [sprite_size[x] * j, sprite_size[y] * i]
 
                     elif mapa[i][j] == 'D': 
                         elementos_fase.inky = Inky([sprite_size[x] * j, sprite_size[y] * i])
+                        elementos_fase.posicao_inicial_inky = [sprite_size[x] * j, sprite_size[y] * i]
 
                     elif mapa[i][j] == 'E': 
                         elementos_fase.clyde = Clyde([sprite_size[x] * j, sprite_size[y] * i])
+                        elementos_fase.posicao_inicial_clyde = [sprite_size[x] * j, sprite_size[y] * i]
 
                     # parede
                     elif mapa[i][j] == '1' or mapa[i][j] == 'S': 

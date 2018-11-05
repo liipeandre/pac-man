@@ -20,3 +20,11 @@ class GameComponent(object):
 
         # retorno a bounding box
         return Rect(self.movimento.posicao[x], self.movimento.posicao[y], self.sprite.sprite_size[x], self.sprite.sprite_size[y])
+
+
+    def resetar(self, posicao):
+        self.movimento.posicao = posicao.copy()
+        self.movimento.estado = estado.parado
+        self.movimento.direcao_atual = direcao.cima
+        self.movimento.proxima_direcao = direcao.cima
+        self.sprite.sprite_frame = [0, 0]

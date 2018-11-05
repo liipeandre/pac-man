@@ -1,5 +1,9 @@
-from Classes.Outros.GameComponent import GameComponent
-from copy import deepcopy
+from Classes.Outros.GameComponent import GameComponent, estado, direcao
+from Classes.Personagens.Pacman import Pacman
+from Classes.Personagens.Blinky import Blinky
+from Classes.Personagens.Pinky import Pinky
+from Classes.Personagens.Inky import Inky
+from Classes.Personagens.Clyde import Clyde
 
 class ControleFase(GameComponent):
     """ Realiza o controle da pontuação e das vidas. """
@@ -61,10 +65,10 @@ class ControleFase(GameComponent):
                 self.pontuacao += powerpill.pontuacao
 
                 # muda o estado dos fantasmas
-                elementos_fase.blinky.acao = Acao.ModoFugaouMorte
-                elementos_fase.pinky.acao = Acao.ModoFugaouMorte
-                elementos_fase.inky.acao = Acao.ModoFugaouMorte
-                elementos_fase.clyde.acao = Acao.ModoFugaouMorte
+                elementos_fase.blinky.movimento.estado = estado.modo_fuga
+                elementos_fase.pinky.movimento.estado = estado.modo_fuga
+                elementos_fase.inky.movimento.estado = estado.modo_fuga
+                elementos_fase.clyde.movimento.estado = estado.modo_fuga
 
                 # exclui a powerpill
                 elementos_fase.powerpills.remove(powerpill)
@@ -81,3 +85,112 @@ class ControleFase(GameComponent):
             self.pontuacao += elementos_fase.chave.pontuacao
             self.fim_fase = True
             elementos_fase.chave = None
+
+        # se pontuacao for igual a 20000 pontos, ganha uma vida extra
+        if self.pontuacao == 20000: self.vida += 1
+
+
+    def sistema_colisao_fantasmas(self, elementos_fase):
+        # testa se pacman colidiu com cada fantasma, se ele nao estiver morto ou morrendo.
+        if elementos_fase.pacman.movimento.estado not in [estado.morrendo, estado.morto]:
+            # se houve colisao
+            if elementos_fase.pacman.bounding_box().colliderect(elementos_fase.blinky.bounding_box()):
+                # se o fantasma estiver em modo fuga, come ele, incrementa pontuacao e muda o estado dele para morto
+                if elementos_fase.blinky.movimento.estado == estado.modo_fuga:
+                    self.pontuacao += elementos_fase.blinky.pontuacao
+                    elementos_fase.blinky.movimento.estado = estado.morto
+                # se ele nao estiver morto, pacman morre
+                elif elementos_fase.blinky.movimento.estado != estado.morto:
+                    elementos_fase.pacman.movimento.estado = estado.morrendo
+                    self.vidas -= 1
+
+            elif elementos_fase.pacman.bounding_box().colliderect(elementos_fase.pinky.bounding_box()):
+                if elementos_fase.pinky.movimento.estado == estado.modo_fuga:
+                    self.pontuacao += elementos_fase.pinky.pontuacao
+                    elementos_fase.pinky.movimento.estado = estado.morto
+                elif elementos_fase.pinky.movimento.estado != estado.morto:
+                    elementos_fase.pacman.movimento.estado = estado.morrendo
+                    self.vidas -= 1
+
+            elif elementos_fase.pacman.bounding_box().colliderect(elementos_fase.inky.bounding_box()):
+                if elementos_fase.inky.movimento.estado == estado.modo_fuga:
+                    self.pontuacao += elementos_fase.inky.pontuacao
+                    elementos_fase.inky.movimento.estado = estado.morto
+                elif elementos_fase.inky.movimento.estado != estado.morto:
+                    elementos_fase.pacman.movimento.estado = estado.morrendo
+                    self.vidas -= 1
+
+            elif elementos_fase.pacman.bounding_box().colliderect(elementos_fase.clyde.bounding_box()):
+                if elementos_fase.clyde.movimento.estado == estado.modo_fuga:
+                    self.pontuacao += elementos_fase.clyde.pontuacao
+                    elementos_fase.clyde.movimento.estado = estado.morto
+                elif elementos_fase.clyde.movimento.estado != estado.morto:
+                    elementos_fase.pacman.movimento.estado = estado.morrendo
+                    self.vidas -= 1
+                
+
+    def atualiza_sprite_frame(self, sprite_objeto):
+        # apelido dos eixos
+        x, y = 0, 1
+
+        if type(sprite_objeto.game_component) is Pacman:
+            # se parado, fica travado em sprite frame específico
+            if sprite_objeto.game_component.movimento.estado == estado.parado:
+                sprite_objeto.game_component.sprite.sprite_frame = [1, sprite_objeto.game_component.movimento.direcao_atual]
+
+            # se andando, itera uma linha do sprite sheet, com os sprite frames da direcao escolhida.
+            elif sprite_objeto.game_component.movimento.estado == estado.andando:
+                if sprite_objeto.game_component.sprite.sprite_frame[x] == 2:
+                    sprite_objeto.game_component.sprite.sprite_frame = [0, sprite_objeto.game_component.movimento.direcao_atual]
+                else:
+                    sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, sprite_objeto.game_component.movimento.direcao_atual]
+            
+            # se morreu, realiza a animação de morte
+            elif sprite_objeto.game_component.movimento.estado == estado.morrendo:
+                if sprite_objeto.game_component.sprite.sprite_frame[x] == 10:
+                    sprite_objeto.game_component.sprite.sprite_frame = [9, 4]
+                    sprite_objeto.game_component.movimento.estado = estado.morto
+                else:
+                    sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, 4]
+                return
+
+        if type(sprite_objeto.game_component) in [Blinky, Pinky, Inky, Clyde]:
+            # se parado, fica travado em sprite frame específico
+            if sprite_objeto.game_component.movimento.estado == estado.parado:
+                sprite_objeto.game_component.sprite.sprite_frame = [0, sprite_objeto.game_component.movimento.direcao_atual]
+
+            # se andando, itera uma linha do sprite sheet, com os sprite frames da direcao escolhida.
+            elif sprite_objeto.game_component.movimento.estado == estado.andando:
+                if sprite_objeto.game_component.sprite.sprite_frame[x] == 1:
+                    sprite_objeto.game_component.sprite.sprite_frame = [0, sprite_objeto.game_component.movimento.estado]
+                else:
+                    sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, sprite_objeto.game_component.movimento.estado]
+
+            # se modo fuga (quando pacman come uma powerpill), itera uma linha do sprite sheet, com os sprite frames.
+            elif sprite_objeto.game_component.movimento.estado == estado.modo_fuga:
+                if sprite_objeto.game_component.sprite.sprite_frame[x] == 3:
+                    sprite_objeto.game_component.sprite.sprite_frame = [0, 4]
+                else:
+                    sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, 4]
+
+            # se morreu, realiza a animação de morte
+            elif sprite_objeto.game_component.movimento.estado == estado.morto:
+                if sprite_objeto.game_component.movimento.direcao_atual == direcao.cima:
+                    sprite_objeto.game_component.sprite.sprite_frame = [2, 5]
+
+                elif sprite_objeto.game_component.movimento.direcao_atual == direcao.baixo:
+                    sprite_objeto.game_component.sprite.sprite_frame = [3, 5]
+
+                elif sprite_objeto.game_component.movimento.direcao_atual == direcao.esquerda:
+                    sprite_objeto.game_component.sprite.sprite_frame = [1, 5]
+
+                elif sprite_objeto.game_component.movimento.direcao_atual == direcao.direita:
+                    sprite_objeto.game_component.sprite.sprite_frame = [0, 5]
+
+
+    def resetar_posicoes_personagens(self, elementos_fase):
+        elementos_fase.pacman.resetar(elementos_fase.posicao_inicial_pacman)
+        elementos_fase.blinky.resetar(elementos_fase.posicao_inicial_blinky)
+        elementos_fase.pinky.resetar(elementos_fase.posicao_inicial_pinky)
+        elementos_fase.inky.resetar(elementos_fase.posicao_inicial_inky)
+        elementos_fase.clyde.resetar(elementos_fase.posicao_inicial_clyde)

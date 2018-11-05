@@ -1,53 +1,66 @@
 from Libraries import *
 from Classes.Fase import *
+from Classes.Outros.Movimento import estado
 
 class Game():
     def __init__(self, tela):
         # variaveis de controle do jogo
         self.rodando = True
         self.clock = time.Clock()
-        self.fps = 120
+        self.fps = 30
         self.tela = tela
-
+        
         # variaveis de controle da fase do jogo
         self.lista_fases = ["Map01", "Map02", "Map03"]
         self.fase_atual = Fase(choice(self.lista_fases))
 
 
-
     def run(self):
         # seta o evento de sortear item, a cada n segundos
-        segundos = 10 
+        segundos = 10
         sortear_item = USEREVENT + 1
         time.set_timer(sortear_item, segundos * 1000)    # x1000, pois a funcao recebe o tempo em milisegundos
 
         while self.rodando:
             # TODO: colocar musica de abertura
+            # enquanto pacman nao morrer todas as vidas
+            fase_nova = True
+            while self.fase_atual.controle_fase.vidas > 0:
 
-            # enquanto a fase não terminar ou as vidas do pacman não acabarem
-            while not self.fase_atual.controle_fase.fim_fase and self.fase_atual.controle_fase.vidas != 0:
-                
-                # trata eventos de jogo
-                for evento in event.get():
-                    if evento.type == sortear_item:
+                # enquanto a fase não terminar ou pacman nao morrer
+                while not self.fase_atual.controle_fase.fim_fase and self.fase_atual.elementos_fase.pacman.movimento.estado != estado.morto:
 
-                        # sorteia o item
-                        self.fase_atual.gerador_itens.sortear(self.fase_atual.elementos_fase)
+                    # trata eventos de jogo
+                    for evento in event.get():
+                        if evento.type == sortear_item:
 
-                # trata eventos do teclado.
-                self.tratar_eventos()
+                            # sorteia o item
+                            self.fase_atual.gerador_itens.sortear(self.fase_atual.elementos_fase)
 
-                # atualiza estado do jogo (movimentacao de personagens, sistema de itens e colisao).
-                self.atualiza_estado_jogo()
+                    # escreve no buffer de tela os elementos visuais.
+                    self.atualizar_tela()
 
-                # escreve no buffer de tela os elementos visuais.
-                self.atualizar_tela()
+                    # atualizar a tela, com os dados do buffer
+                    display.update()
 
-                # atualizar a tela, com os dados do buffer
-                display.update()
+                    # se for uma fase nova, toca a música de abertura e espera alguns segundos
+                    if fase_nova:
+                        self.fase_atual.sons.pacman_beginning.play()
+                        time.wait(4000)
+                        fase_nova = False
 
-                # atualiza os fps
-                self.clock.tick(self.fps)
+                    # trata eventos do teclado.
+                    self.tratar_eventos()
+
+                    # atualiza estado do jogo (movimentacao de personagens, sistema de itens e colisao).
+                    self.atualiza_estado_jogo()
+
+                    # atualiza o relogio
+                    self.clock.tick(self.fps)
+
+                # se nao acabou a fase, pacman morreu, entao reseta a posicao dos personagens 
+                if not self.fase_atual.controle_fase.fim_fase:
+                    self.fase_atual.controle_fase.resetar_posicoes_personagens(self.fase_atual.elementos_fase)
 
             # se acabaram as vidas do pacman, acabou o jogo
             if self.fase_atual.controle_fase.vidas == 0:
@@ -93,4 +106,5 @@ class Game():
         # sistema de colisao com itens e pontuacao
         self.fase_atual.controle_fase.sistema_itens_pontuacao(self.fase_atual.elementos_fase)
 
-        # TODO: deteccao de colisao de pacman com fantasmas
+        # sistema de colisao de pacman com fantasmas
+        self.fase_atual.controle_fase.sistema_colisao_fantasmas(self.fase_atual.elementos_fase)

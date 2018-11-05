@@ -15,7 +15,12 @@ class ElementosFase(object):
         self.pacdots = []
         self.powerpills = []
 
-        # posicoes onde aparecerao os itens, a chave e a casa dos fantasmas, dentro do jogo
+        # posicoes onde aparecerao os itens, a chave e a casa dos fantasmas e as posicoes iniciais do personagens, dentro do jogo
         self.casa_fantasmas = None
+        self.posicao_inicial_pacman = None
+        self.posicao_inicial_blinky = None
+        self.posicao_inicial_pinky = None
+        self.posicao_inicial_inky = None
+        self.posicao_inicial_clyde = None
         self.posicao_itens = None
         self.posicao_chave = None
