@@ -7,7 +7,10 @@ from Classes.Personagens.Clyde import Clyde
 
 class ControleFase(GameComponent):
     """ Realiza o controle da pontuação e das vidas. """
-    def __init__(self, posicao: list, controle_fase=None):
+    def __init__(self, posicao: list, controle_fase=None, fase_atual=None):
+        # referencia para a fase atual
+        self.fase_atual = fase_atual
+
         # construtor base
         super().__init__(posicao, "Nenhum", None, True)
 
@@ -44,6 +47,9 @@ class ControleFase(GameComponent):
 
             # exclui o item
             elementos_fase.item = None
+
+            # toca a musica de comer item
+            elementos_fase.fase_atual.sons.pacman_eatfruit.play()
         
         for pacdot in elementos_fase.pacdots.copy():
             if elementos_fase.pacman.bounding_box().colliderect(pacdot.bounding_box()):
@@ -53,6 +59,9 @@ class ControleFase(GameComponent):
 
                 # exclui a pacdot
                 elementos_fase.pacdots.remove(pacdot)
+
+                # ativa o audio do pacman comendo uma pacdot
+                elementos_fase.fase_atual.sons.pacman_chomp.play()
 
                 # sai do laço
                 break
@@ -73,6 +82,9 @@ class ControleFase(GameComponent):
                 # exclui a powerpill
                 elementos_fase.powerpills.remove(powerpill)
 
+                # ativa o audio de modo fuga dos fantasmas
+                elementos_fase.fase_atual.sons.ghost_frightened.play()
+
                 # sai do laço
                 break
 
@@ -85,20 +97,30 @@ class ControleFase(GameComponent):
             self.pontuacao += elementos_fase.chave.pontuacao
             self.fim_fase = True
             elementos_fase.chave = None
+            
+            # toca a musica de comer item
+            elementos_fase.fase_atual.sons.pacman_eatfruit.play()
 
         # se pontuacao for igual a 20000 pontos, ganha uma vida extra
-        if self.pontuacao == 20000: self.vida += 1
+        if self.pontuacao == 20000: 
+            self.vida += 1
+
+            # toca a musica de vida extra
+            elementos_fase.fase_atual.sons.pacman_extrapac.play()
 
 
     def sistema_colisao_fantasmas(self, elementos_fase):
         # testa se pacman colidiu com cada fantasma, se ele nao estiver morto ou morrendo.
         if elementos_fase.pacman.movimento.estado not in [estado.morrendo, estado.morto]:
+
             # se houve colisao
             if elementos_fase.pacman.bounding_box().colliderect(elementos_fase.blinky.bounding_box()):
+
                 # se o fantasma estiver em modo fuga, come ele, incrementa pontuacao e muda o estado dele para morto
                 if elementos_fase.blinky.movimento.estado == estado.modo_fuga:
                     self.pontuacao += elementos_fase.blinky.pontuacao
                     elementos_fase.blinky.movimento.estado = estado.morto
+
                 # se ele nao estiver morto, pacman morre
                 elif elementos_fase.blinky.movimento.estado != estado.morto:
                     elementos_fase.pacman.movimento.estado = estado.morrendo
@@ -127,6 +149,17 @@ class ControleFase(GameComponent):
                 elif elementos_fase.clyde.movimento.estado != estado.morto:
                     elementos_fase.pacman.movimento.estado = estado.morrendo
                     self.vidas -= 1
+
+            # se pacman estiver morrendo, toca a música de morte do pacman
+            if elementos_fase.pacman.movimento.estado == estado.morrendo:
+                elementos_fase.fase_atual.sons.pacman_death.play()
+
+            # se algum fantasma estiver morto, toca a música de morte dos fantasmas
+            if elementos_fase.blinky.movimento.estado == estado.morto or \
+                elementos_fase.pinky.movimento.estado == estado.morto or \
+                elementos_fase.inky.movimento.estado == estado.morto or \
+                elementos_fase.clyde.movimento.estado == estado.morto:
+                elementos_fase.fase_atual.sons.ghost_return_to_home.play()
                 
 
     def atualiza_sprite_frame(self, sprite_objeto):
@@ -152,6 +185,7 @@ class ControleFase(GameComponent):
                     sprite_objeto.game_component.movimento.estado = estado.morto
                 else:
                     sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, 4]
+
                 return
 
         if type(sprite_objeto.game_component) in [Blinky, Pinky, Inky, Clyde]:
