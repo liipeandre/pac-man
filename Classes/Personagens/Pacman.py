@@ -1,4 +1,4 @@
-from Libraries import Rect, event, key, K_UP, K_DOWN, K_LEFT, K_RIGHT, time
+from Libraries import *
 from Classes.Outros.GameComponent import GameComponent
 from Classes.Outros.Movimento import *
 
@@ -6,6 +6,7 @@ class Pacman(GameComponent):
     """Personagem do jogo, controlado pelo jogador."""
     def __init__(self, posicao: list):
         # construtor base
+        self.gravar = False
         super().__init__(posicao, "Pac-man.bmp")
 
     def bounding_box(self):
@@ -18,7 +19,7 @@ class Pacman(GameComponent):
 
     def move(self, elementos_fase):        
         # ignoro qualquer acao se ja estiver morto/morrendo
-        if self.movimento.estado != estado.morrendo:
+        if self.movimento.estado2 != estado2.morrendo:
 
             # define a próxima acao
             teclas = self.escolher_acao()
@@ -33,7 +34,10 @@ class Pacman(GameComponent):
             # guardo a acao anterior
             direcao_anterior = self.movimento.direcao_atual
 
-            # se alguma tecla foi pressionada agora, proxima acao será ir na direcao da tecla.  
+            if teclas[K_SPACE]:
+                self.gravar = True
+
+            # se alguma tecla foi pressionada agora, proxima acao será ir na direcao da tecla.
             if teclas[K_UP]:
                 self.movimento.estado = estado.andando
                 self.movimento.proxima_direcao = direcao.cima

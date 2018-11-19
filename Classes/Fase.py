@@ -2,24 +2,27 @@ from Classes.Outros.ControleFase import ControleFase
 from Classes.Outros.ElementosFase import ElementosFase
 from Classes.Outros.GeradorItens import GeradorItens
 from Classes.Outros.MapLoader import MapLoader
-from Classes.Outros.Sons import Sons
+from Classes.Outros.ControleAudio import ControleAudio
 
 class Fase():
-    def __init__(self, nome_fase:str, controle_fase=None):
+    def __init__(self, nome_fase:str, controle_fase=None, jogo=None):
         if controle_fase is None:
             # dados de controle da fase
+            self.jogo = jogo
             self.controle_fase = ControleFase([460, 200], fase_atual=self)
             self.elementos_fase = ElementosFase(fase_atual=self)
             self.carregador_mapa = MapLoader(nome_fase, self.elementos_fase)
             self.gerador_itens = GeradorItens()
-            self.sons = Sons()
+            self.controle_audio = ControleAudio()
 
         else:
             # dados de controle da fase
+            self.jogo = jogo
             self.elementos_fase = ControleFase([460, 200], controle_fase)
             self.elementos_fase = ElementosFase()
             self.carregador_mapa = MapLoader(nome_fase, self.elementos_fase)
             self.gerador_itens = GeradorItens()
+            self.controle_audio = ControleAudio()
 
     def draw(self, tela):
         # atualiza a animacao
@@ -53,3 +56,13 @@ class Fase():
         self.elementos_fase.inky.sprite.draw(tela)
         self.elementos_fase.clyde.sprite.draw(tela)
         self.elementos_fase.pacman.sprite.draw(tela)
+
+        if self.elementos_fase.pacman.gravar == True:
+            with open("Data/AI/Output.txt", "a+") as arquivo:
+                ultima_linha = arquivo.readlines()
+                if ultima_linha:
+                    if ultima_linha[-1] != f"{self.elementos_fase.blinky.movimento.posicao[0]};{self.elementos_fase.blinky.movimento.posicao[1]};{self.elementos_fase.pacman.movimento.posicao[0]};{self.elementos_fase.pacman.movimento.posicao[1]};{self.elementos_fase.casa_fantasmas[0]};{self.elementos_fase.casa_fantasmas[1]}\n":
+                        arquivo.write(f"{self.elementos_fase.blinky.movimento.posicao[0]};{self.elementos_fase.blinky.movimento.posicao[1]};{self.elementos_fase.pacman.movimento.posicao[0]};{self.elementos_fase.pacman.movimento.posicao[1]};{self.elementos_fase.casa_fantasmas[0]};{self.elementos_fase.casa_fantasmas[1]}\n")
+                else:
+                    arquivo.write(f"{self.elementos_fase.blinky.movimento.posicao[0]};{self.elementos_fase.blinky.movimento.posicao[1]};{self.elementos_fase.pacman.movimento.posicao[0]};{self.elementos_fase.pacman.movimento.posicao[1]};{self.elementos_fase.casa_fantasmas[0]};{self.elementos_fase.casa_fantasmas[1]}\n")
+                self.elementos_fase.pacman.gravar = False

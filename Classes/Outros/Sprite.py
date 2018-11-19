@@ -26,7 +26,7 @@ class Sprite(object):
             if not desenha_pontuacao:
 
                 # sprite sheet do personagem
-                self.sprite_sheet = image.load("Data/Graphics/" + sprite_sheet_file)
+                self.sprite_sheet = image.load("Data/Graphics/" + sprite_sheet_file).convert()
 
         # senao, leio o sprite sheet e o sprite frame fixo
         else:
@@ -35,7 +35,7 @@ class Sprite(object):
             self.sprite_frame = sprite_frame
 
             # sprite sheet do personagem
-            self.sprite_sheet = image.load("Data/Graphics/" + sprite_sheet_file)
+            self.sprite_sheet = image.load("Data/Graphics/" + sprite_sheet_file).convert()
 
     def draw(self, tela):
         # apelido dos eixos

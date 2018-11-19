@@ -37,7 +37,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Classes\Outros\ControleFase.py" />
-    <Compile Include="Classes\Outros\Sons.py">
+    <Compile Include="Classes\Outros\ControleAudio.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Classes\Outros\Sprite.py">
