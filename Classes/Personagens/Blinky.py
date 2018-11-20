@@ -29,14 +29,16 @@ class Blinky(GameComponent):
             if resultado[x] == 0 and resultado[y] < 0:
                 teclas[K_UP] = 1
 
-            if resultado[x] == 0 and resultado[y] > 0:
+            elif resultado[x] == 0 and resultado[y] > 0:
                 teclas[K_DOWN] = 1
 
-            if resultado[x] < 0 and resultado[y] == 0:
+            elif resultado[x] < 0 and resultado[y] == 0:
                 teclas[K_LEFT] = 1
 
-            if resultado[x] > 0 and resultado[y] == 0:
+            elif resultado[x] > 0 and resultado[y] == 0:
                 teclas[K_RIGHT] = 1
+
+            else:
 
         # se modo fuga, calcula a distancia euclidiana da posicao do pacman até a posicao atual
         elif self.movimento.estado2 == estado2.modo_fuga:
@@ -48,14 +50,16 @@ class Blinky(GameComponent):
             if resultado[x] == 0 and resultado[y] < 0:
                 teclas[K_DOWN] = 1
 
-            if resultado[x] == 0 and resultado[y] > 0:
+            elif resultado[x] == 0 and resultado[y] > 0:
                 teclas[K_UP] = 1
 
-            if resultado[x] < 0 and resultado[y] == 0:
+            elif resultado[x] < 0 and resultado[y] == 0:
                 teclas[K_RIGHT] = 1
 
-            if resultado[x] > 0 and resultado[y] == 0:
+            elif resultado[x] > 0 and resultado[y] == 0:
                 teclas[K_LEFT] = 1
+
+            else:
         
         # senao, em modo normal, segue o pacman
         else:
@@ -66,14 +70,17 @@ class Blinky(GameComponent):
             if resultado[x] == 0 and resultado[y] < 0:
                 teclas[K_UP] = 1
 
-            if resultado[x] == 0 and resultado[y] > 0:
+            elif resultado[x] == 0 and resultado[y] > 0:
                 teclas[K_DOWN] = 1
 
-            if resultado[x] < 0 and resultado[y] == 0:
+            elif resultado[x] < 0 and resultado[y] == 0:
                 teclas[K_LEFT] = 1
 
-            if resultado[x] > 0 and resultado[y] == 0:
+            elif resultado[x] > 0 and resultado[y] == 0:
                 teclas[K_RIGHT] = 1
+
+            else:
+
 
         return teclas
 

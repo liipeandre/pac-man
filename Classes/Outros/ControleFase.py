@@ -52,9 +52,15 @@ class ControleFase(GameComponent):
             # exclui o item
             elementos_fase.item = None
 
-            # toca a musica de comer item
-            if not elementos_fase.fase_atual.controle_audio.pacman_eatfruit.get_busy():
-                elementos_fase.fase_atual.controle_audio.pacman_eatfruit.play()
+            # apelido a variavel de controle de audio e o indice na lista de canais
+            controle_audio = elementos_fase.fase_atual.controle_audio
+            indice = controle_audio.nome_arquivos_audio.index("pacman_eatfruit.ogg")
+
+            # se não toquei ela ainda ou não está tocando
+            if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
+                    
+                # toca a mesma música novamente
+                controle_audio.canais[indice] = controle_audio.sons[indice].play()
 
         for pacdot in elementos_fase.pacdots.copy():
 
