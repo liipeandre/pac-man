@@ -1,6 +1,9 @@
+from Libraries import subtract
+
 class ElementosFase(object):
     """ Mantém os elementos da fase (itens, personagens, etc.)."""
     def __init__(self, fase_atual):
+
         # referencia para a fase atual
         self.fase_atual = fase_atual
 

@@ -9,6 +9,12 @@ class Clyde(GameComponent):
         self.pontuacao = 1000
         super().__init__(posicao, "Clyde.bmp")
 
+    def __str__(self):
+        return f"{str(self.movimento.posicao[0])};{str(self.movimento.posicao[1])};{str(int(self.movimento.estado2))}"
+
+    def tolist(self):
+        return [self.movimento.posicao[0], self.movimento.posicao[1], int(self.movimento.estado2)]
+
     def bounding_box(self):
         return Rect(self.movimento.posicao, self.sprite.sprite_size)
 
@@ -16,64 +22,12 @@ class Clyde(GameComponent):
         # apelido dos eixos
         x, y = 0, 1
 
+        # capturo as teclas presionadas
+        event.pump()
+        return key.get_pressed()
+
         # crio o array de teclas
         teclas = [0] * len(key.get_pressed())
-
-        # se morto, calcula a distancia euclidiana da posicao atual até a casa dos fantasmas
-        if self.movimento.estado2 == estado2.morto:
-
-            # faz a diferenca entre os dois pontos
-            resultado = subtract(self.movimento.posicao, elementos_fase.casa_fantasmas)
-            
-            # a partir do resultado, extrai-se a direcao
-            if resultado[x] == 0 and resultado[y] < 0:
-                teclas[K_UP] = 1
-
-            if resultado[x] == 0 and resultado[y] > 0:
-                teclas[K_DOWN] = 1
-
-            if resultado[x] < 0 and resultado[y] == 0:
-                teclas[K_LEFT] = 1
-
-            if resultado[x] > 0 and resultado[y] == 0:
-                teclas[K_RIGHT] = 1
-
-        # se modo fuga, calcula a distancia euclidiana da posicao do pacman até a posicao atual
-        elif self.movimento.estado2 == estado2.modo_fuga:
-
-            # faz a diferenca entre os dois pontos
-            resultado = subtract(elementos_fase.pacman.movimento.posicao, self.movimento.posicao)
-            
-            # a partir do resultado, extrai-se a direcao
-            if resultado[x] == 0 and resultado[y] < 0:
-                teclas[K_DOWN] = 1
-
-            if resultado[x] == 0 and resultado[y] > 0:
-                teclas[K_UP] = 1
-
-            if resultado[x] < 0 and resultado[y] == 0:
-                teclas[K_RIGHT] = 1
-
-            if resultado[x] > 0 and resultado[y] == 0:
-                teclas[K_LEFT] = 1
-        
-        # senao, em modo normal, segue o pacman
-        else:
-            # faz a diferenca entre os dois pontos
-            resultado = subtract(elementos_fase.pacman.movimento.posicao, self.movimento.posicao)
-            
-            # a partir do resultado, extrai-se a direcao
-            if resultado[x] == 0 and resultado[y] < 0:
-                teclas[K_UP] = 1
-
-            if resultado[x] == 0 and resultado[y] > 0:
-                teclas[K_DOWN] = 1
-
-            if resultado[x] < 0 and resultado[y] == 0:
-                teclas[K_LEFT] = 1
-
-            if resultado[x] > 0 and resultado[y] == 0:
-                teclas[K_RIGHT] = 1
 
         return teclas
 
@@ -94,16 +48,16 @@ class Clyde(GameComponent):
         direcao_anterior = self.movimento.direcao_atual
 
         # se alguma tecla foi pressionada agora, proxima acao será ir na direcao da tecla.  
-        if teclas[K_UP]:
+        if teclas[K_8]:
             self.movimento.proxima_direcao = direcao.cima
 
-        if teclas[K_DOWN]:
+        if teclas[K_5]:
             self.movimento.proxima_direcao = direcao.baixo
 
-        if teclas[K_LEFT]:
+        if teclas[K_4]:
             self.movimento.proxima_direcao = direcao.esquerda
 
-        if teclas[K_RIGHT]:
+        if teclas[K_6]:
             self.movimento.proxima_direcao = direcao.direita
             
         # defino o número de passos para a ação acontecer

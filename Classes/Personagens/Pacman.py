@@ -6,8 +6,13 @@ class Pacman(GameComponent):
     """Personagem do jogo, controlado pelo jogador."""
     def __init__(self, posicao: list):
         # construtor base
-        self.gravar = False
         super().__init__(posicao, "Pac-man.bmp")
+
+    def __str__(self):
+        return f"{str(self.movimento.posicao[0])};{str(self.movimento.posicao[1])}"
+
+    def tolist(self):
+        return [self.movimento.posicao[0], self.movimento.posicao[1]]
 
     def bounding_box(self):
         return Rect(self.movimento.posicao, self.sprite.sprite_size)
@@ -35,7 +40,11 @@ class Pacman(GameComponent):
             direcao_anterior = self.movimento.direcao_atual
 
             if teclas[K_SPACE]:
-                self.gravar = True
+                with open("Classes/AI/Posicoes.out", "w") as arquivo:
+                    saida = f"{str(elementos_fase.pacman)};{str(elementos_fase.blinky)};{str(elementos_fase.pinky)};{str(elementos_fase.inky)};{str(elementos_fase.clyde)};{str(elementos_fase.casa_fantasmas[0])};{str(elementos_fase.casa_fantasmas[1])}"
+                    for parede in elementos_fase.paredes:
+                        saida += f";{str(parede)}"
+                    arquivo.write(saida + ";\n")
 
             # se alguma tecla foi pressionada agora, proxima acao será ir na direcao da tecla.
             if teclas[K_UP]:

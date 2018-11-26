@@ -39,11 +39,12 @@ class MapLoader(object):
 
                     elif mapa[i][j] == 'C': 
                         elementos_fase.pinky  = Pinky([sprite_size[x] * j, sprite_size[y] * i])
-                        elementos_fase.casa_fantasmas = [sprite_size[x] * j, sprite_size[y] * i]
                         elementos_fase.posicao_inicial_pinky = [sprite_size[x] * j, sprite_size[y] * i]
 
                     elif mapa[i][j] == 'D': 
                         elementos_fase.inky = Inky([sprite_size[x] * j, sprite_size[y] * i])
+                        elementos_fase.casa_fantasmas = [(elementos_fase.pinky.movimento.posicao[x] + \
+                                                          elementos_fase.inky.movimento.posicao[x])/2, sprite_size[y] * i]
                         elementos_fase.posicao_inicial_inky = [sprite_size[x] * j, sprite_size[y] * i]
 
                     elif mapa[i][j] == 'E': 

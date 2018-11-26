@@ -92,6 +92,9 @@ class Game():
                 # desabilita o timer 
                 time.set_timer(mudar_fantasmas_normal, 0 * 1000)
 
+                # para o som
+                self.fase_atual.controle_audio.parar_som("ghost_frightened.ogg")
+
     def atualizar_tela(self):
         ''' trata eventos visuais e sonoros (audio) '''
         # limpa a tela

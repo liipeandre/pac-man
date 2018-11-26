@@ -56,13 +56,3 @@ class Fase():
         self.elementos_fase.inky.sprite.draw(tela)
         self.elementos_fase.clyde.sprite.draw(tela)
         self.elementos_fase.pacman.sprite.draw(tela)
-
-        if self.elementos_fase.pacman.gravar == True:
-            with open("Data/AI/Output.txt", "a+") as arquivo:
-                ultima_linha = arquivo.readlines()
-                if ultima_linha:
-                    if ultima_linha[-1] != f"{self.elementos_fase.blinky.movimento.posicao[0]};{self.elementos_fase.blinky.movimento.posicao[1]};{self.elementos_fase.pacman.movimento.posicao[0]};{self.elementos_fase.pacman.movimento.posicao[1]};{self.elementos_fase.casa_fantasmas[0]};{self.elementos_fase.casa_fantasmas[1]}\n":
-                        arquivo.write(f"{self.elementos_fase.blinky.movimento.posicao[0]};{self.elementos_fase.blinky.movimento.posicao[1]};{self.elementos_fase.pacman.movimento.posicao[0]};{self.elementos_fase.pacman.movimento.posicao[1]};{self.elementos_fase.casa_fantasmas[0]};{self.elementos_fase.casa_fantasmas[1]}\n")
-                else:
-                    arquivo.write(f"{self.elementos_fase.blinky.movimento.posicao[0]};{self.elementos_fase.blinky.movimento.posicao[1]};{self.elementos_fase.pacman.movimento.posicao[0]};{self.elementos_fase.pacman.movimento.posicao[1]};{self.elementos_fase.casa_fantasmas[0]};{self.elementos_fase.casa_fantasmas[1]}\n")
-                self.elementos_fase.pacman.gravar = False

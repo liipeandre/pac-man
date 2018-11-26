@@ -4,6 +4,8 @@ from Classes.Outros.GameComponent import GameComponent
 class Objeto(GameComponent):
     """Classe que representa os elementos fixos do jogo (itens e a parede)."""
     def __init__(self, posicao: list, tipo_item: str):
+        # adiciona o tipo do item
+        self.item = tipo_item
 
         # cria o item e/ou parede, conforme o tipo passado.
         # chama o construtor base, passando parâmetros exclusivo para cada tipo de objeto.
@@ -50,6 +52,11 @@ class Objeto(GameComponent):
         elif tipo_item == "wall": 
             super().__init__(posicao, "Items.bmp", (10, 0))
 
+    def __str__(self):
+        return f"{str(self.movimento.posicao[0])};{str(self.movimento.posicao[1])};{str(self.sprite.sprite_size[0])};{str(self.sprite.sprite_size[1])}"
+
+    def tolist(self):
+        return [self.movimento.posicao[0], self.movimento.posicao[1], self.sprite.sprite_size[0], self.sprite.sprite_size[1]]
 
     def bounding_box(self):
         return Rect(self.movimento.posicao, self.sprite.sprite_size)

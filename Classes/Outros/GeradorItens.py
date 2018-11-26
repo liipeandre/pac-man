@@ -6,7 +6,7 @@ class GeradorItens(object):
 
     def __init__(self):
         # defino a quantidade e tipo de fichas de itens
-        self.num_fichas  = [512, 64, 32, 16, 8, 4, 2, 1]
+        self.num_fichas  = [2048, 64, 32, 16, 8, 4, 2, 1]
         self.tipo_fichas = ["nenhum", "cherry", "strawberry", "orange", "apple", "melon", "galaxy boss", "bell"]
 
 
@@ -21,4 +21,4 @@ class GeradorItens(object):
         tipo_item = choice(fichas)
 
         # crio o item sorteado
-        if tipo_item != "nenhum": elementos_fase.item = Objeto(elementos_fase.posicao_itens, tipo_item)
+        if elementos_fase.item is not None and tipo_item != "nenhum" and elementos_fase.item.tipo_item != "key": elementos_fase.item = Objeto(elementos_fase.posicao_itens, tipo_item)

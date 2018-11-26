@@ -1,13 +1,21 @@
 from Libraries import *
 from Classes.Outros.GameComponent import GameComponent
 from Classes.Outros.Movimento import *
+from pickle import load
 
 class Blinky(GameComponent):
     """inimigo do jogo, controlado pela IA."""
     def __init__(self, posicao: list):
         # construtor base
         self.pontuacao = 1000
+        self.ai = load(open("Classes/AI/RNAs Treinadas/Blinky.rna", 'rb'))
         super().__init__(posicao, "Blinky.bmp")
+
+    def __str__(self):
+        return f"{str(self.movimento.posicao[0])};{str(self.movimento.posicao[1])};{str(int(self.movimento.estado2))}"
+
+    def tolist(self):
+        return [self.movimento.posicao[0], self.movimento.posicao[1], int(self.movimento.estado2)]
 
     def bounding_box(self):
         return Rect(self.movimento.posicao, self.sprite.sprite_size)
@@ -19,71 +27,31 @@ class Blinky(GameComponent):
         # crio o array de teclas
         teclas = [0] * len(key.get_pressed())
 
-        # se morto, calcula a distancia euclidiana da posicao atual até a casa dos fantasmas
-        if self.movimento.estado2 == estado2.morto:
+        # extrai os dados e passa para a IA retornar a próxima acao a ser feita
+        dados = []
+        dados += elementos_fase.pacman.tolist() + elementos_fase.blinky.tolist() + elementos_fase.pinky.tolist() + elementos_fase.inky.tolist() + elementos_fase.clyde.tolist()
+        dados += [elementos_fase.casa_fantasmas[0], elementos_fase.casa_fantasmas[1]]
+        for parede in elementos_fase.paredes:
+            dados += parede.tolist()
 
-            # faz a diferenca entre os dois pontos
-            resultado = subtract(self.movimento.posicao, elementos_fase.casa_fantasmas)
-            
-            # a partir do resultado, extrai-se a direcao
-            if resultado[x] == 0 and resultado[y] < 0:
-                teclas[K_UP] = 1
+        # aplico a IA
+        proxima_direcao = self.ai.predict([dados])
 
-            elif resultado[x] == 0 and resultado[y] > 0:
-                teclas[K_DOWN] = 1
+        # pressiona a tecla conforme a direcao retornada
+        if proxima_direcao == direcao.cima:
+            teclas[K_w] = 1
 
-            elif resultado[x] < 0 and resultado[y] == 0:
-                teclas[K_LEFT] = 1
+        elif proxima_direcao == direcao.baixo:
+            teclas[K_s] = 1
 
-            elif resultado[x] > 0 and resultado[y] == 0:
-                teclas[K_RIGHT] = 1
+        elif proxima_direcao == direcao.esquerda:
+            teclas[K_a] = 1
 
-            else:
+        elif proxima_direcao == direcao.direita:
+            teclas[K_d] = 1
 
-        # se modo fuga, calcula a distancia euclidiana da posicao do pacman até a posicao atual
-        elif self.movimento.estado2 == estado2.modo_fuga:
-
-            # faz a diferenca entre os dois pontos
-            resultado = subtract(elementos_fase.pacman.movimento.posicao, self.movimento.posicao)
-            
-            # a partir do resultado, extrai-se a direcao
-            if resultado[x] == 0 and resultado[y] < 0:
-                teclas[K_DOWN] = 1
-
-            elif resultado[x] == 0 and resultado[y] > 0:
-                teclas[K_UP] = 1
-
-            elif resultado[x] < 0 and resultado[y] == 0:
-                teclas[K_RIGHT] = 1
-
-            elif resultado[x] > 0 and resultado[y] == 0:
-                teclas[K_LEFT] = 1
-
-            else:
-        
-        # senao, em modo normal, segue o pacman
-        else:
-            # faz a diferenca entre os dois pontos
-            resultado = subtract(elementos_fase.pacman.movimento.posicao, self.movimento.posicao)
-            
-            # a partir do resultado, extrai-se a direcao
-            if resultado[x] == 0 and resultado[y] < 0:
-                teclas[K_UP] = 1
-
-            elif resultado[x] == 0 and resultado[y] > 0:
-                teclas[K_DOWN] = 1
-
-            elif resultado[x] < 0 and resultado[y] == 0:
-                teclas[K_LEFT] = 1
-
-            elif resultado[x] > 0 and resultado[y] == 0:
-                teclas[K_RIGHT] = 1
-
-            else:
-
-
+        # retorno as teclas
         return teclas
-
 
     def move(self, elementos_fase):
 
@@ -101,16 +69,16 @@ class Blinky(GameComponent):
         direcao_anterior = self.movimento.direcao_atual
 
         # se alguma tecla foi pressionada agora, proxima acao será ir na direcao da tecla.  
-        if teclas[K_UP]:
+        if teclas[K_w]:
             self.movimento.proxima_direcao = direcao.cima
 
-        if teclas[K_DOWN]:
+        if teclas[K_s]:
             self.movimento.proxima_direcao = direcao.baixo
 
-        if teclas[K_LEFT]:
+        if teclas[K_a]:
             self.movimento.proxima_direcao = direcao.esquerda
 
-        if teclas[K_RIGHT]:
+        if teclas[K_d]:
             self.movimento.proxima_direcao = direcao.direita
             
         # defino o número de passos para a ação acontecer
@@ -168,6 +136,10 @@ class Blinky(GameComponent):
                 self.movimento.estado = estado.parado
                 break
             passos += 1
+
+
+
+
 
 
     def colisao(self, direcao: direcao, elementos_fase):

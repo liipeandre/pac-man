@@ -4,7 +4,8 @@ from Classes.Personagens.Blinky import Blinky
 from Classes.Personagens.Pinky import Pinky
 from Classes.Personagens.Inky import Inky
 from Classes.Personagens.Clyde import Clyde
-from Libraries import time, Thread, USEREVENT
+from Classes.Outros.Objeto import Objeto
+from Libraries import time, USEREVENT
 
 class ControleFase(GameComponent):
     """ Realiza o controle da pontuação e das vidas. """
@@ -53,14 +54,7 @@ class ControleFase(GameComponent):
             elementos_fase.item = None
 
             # apelido a variavel de controle de audio e o indice na lista de canais
-            controle_audio = elementos_fase.fase_atual.controle_audio
-            indice = controle_audio.nome_arquivos_audio.index("pacman_eatfruit.ogg")
-
-            # se não toquei ela ainda ou não está tocando
-            if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
-                    
-                # toca a mesma música novamente
-                controle_audio.canais[indice] = controle_audio.sons[indice].play()
+            elementos_fase.fase_atual.controle_audio.tocar_som("pacman_eatfruit.ogg", 1)
 
         for pacdot in elementos_fase.pacdots.copy():
 
@@ -95,52 +89,30 @@ class ControleFase(GameComponent):
                 # exclui a powerpill
                 elementos_fase.powerpills.remove(powerpill)
 
-                # apelido a variavel de controle de audio e o indice na lista de canais
-                controle_audio = elementos_fase.fase_atual.controle_audio
-                indice = controle_audio.nome_arquivos_audio.index("ghost_frightened.ogg")
-
-                # se não toquei ela ainda ou não está tocando
-                if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
-                    
-                    # toca a mesma música novamente
-                    controle_audio.canais[indice] = controle_audio.sons[indice].play()
+                # toca o audio
+                elementos_fase.fase_atual.controle_audio.tocar_som("ghost_frightened.ogg")
 
                 # sai do laço
                 break
 
         # se acabou os pacdots, insere a chave para passar de fase
         if not elementos_fase.pacdots and elementos_fase.chave is None:
-            elementos_fase.chave = Chave(elementos_fase.posicao_chave)
+            elementos_fase.chave = Objeto(elementos_fase.posicao_chave, "key")
 
         # se pacman colidir com uma chave, ele passa de fase e incrementa pontuacao
         if elementos_fase.chave is not None and elementos_fase.pacman.bounding_box().colliderect(elementos_fase.chave.bounding_box()):
             self.pontuacao += elementos_fase.chave.pontuacao
             self.fim_fase = True
             elementos_fase.chave = None
-            
-            # apelido a variavel de controle de audio e o indice na lista de canais
-            controle_audio = elementos_fase.fase_atual.controle_audio
-            indice = controle_audio.nome_arquivos_audio.index("pacman_eatfruit.ogg")
 
-            # se não toquei ela ainda ou não está tocando
-            if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
-                    
-                # toca a mesma música novamente
-                controle_audio.canais[indice] = controle_audio.sons[indice].play()
+            # toca o audio
+            elementos_fase.fase_atual.controle_audio.tocar_som("pacman_eatfruit.ogg", 1)
 
         # se pontuacao for igual a 20000 pontos, ganha uma vida extra
         if self.pontuacao == 20000: 
             self.vida += 1
-
-            # apelido a variavel de controle de audio e o indice na lista de canais
-            controle_audio = elementos_fase.fase_atual.controle_audio
-            indice = controle_audio.nome_arquivos_audio.index("pacman_extrapac.ogg")
-
-            # se não toquei ela ainda ou não está tocando
-            if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
-                    
-                # toca a mesma música novamente
-                controle_audio.canais[indice] = controle_audio.sons[indice].play()
+            # toca o audio
+            elementos_fase.fase_atual.controle_audio.tocar_som("pacman_extrapac.ogg", 1)
 
 
     def sistema_colisao_fantasmas(self, elementos_fase):
@@ -177,7 +149,6 @@ class ControleFase(GameComponent):
 
             elif elementos_fase.pacman.bounding_box().colliderect(elementos_fase.clyde.bounding_box()):
                 if elementos_fase.clyde.movimento.estado2 == estado2.modo_fuga:
-                    estado2.nenhum
                     self.pontuacao += elementos_fase.clyde.pontuacao
                     elementos_fase.clyde.movimento.estado2 = estado2.morto
 
@@ -186,44 +157,19 @@ class ControleFase(GameComponent):
 
             # se pacman estiver morrendo, toca a música de morte do pacman
             if elementos_fase.pacman.movimento.estado2 == estado2.morrendo:
-
-                # apelido a variavel de controle de audio e o indice na lista de canais
-                controle_audio = elementos_fase.fase_atual.controle_audio
-                indice = controle_audio.nome_arquivos_audio.index("pacman_death.ogg")
-
-                # se não toquei ela ainda ou não está tocando
-                if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
-                    
-                    # toca a mesma música novamente
-                    controle_audio.canais[indice] = controle_audio.sons[indice].play()
+                self.fase_atual.controle_audio.tocar_som("pacman_death.ogg", 1)
 
             # se algum fantasma estiver morto, toca a música de morte dos fantasmas
             if elementos_fase.blinky.movimento.estado2 == estado2.morto or elementos_fase.pinky.movimento.estado2 == estado2.morto or \
                 elementos_fase.inky.movimento.estado2 == estado2.morto or elementos_fase.clyde.movimento.estado2 == estado2.morto:
                 
-                # apelido a variavel de controle de audio e o indice na lista de canais
-                controle_audio = elementos_fase.fase_atual.controle_audio
-                indice = controle_audio.nome_arquivos_audio.index("ghost_return_to_home.ogg")
-
-                # se não toquei ela ainda ou não está tocando
-                if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
-                    
-                    # toca a mesma música novamente
-                    controle_audio.canais[indice] = controle_audio.sons[indice].play()
+                self.fase_atual.controle_audio.tocar_som("ghost_return_to_home.ogg")
 
             # se fantasmas estao normais toca a musica de perseguição
-            elif elementos_fase.blinky.movimento.estado2 == estado2.nenhum or elementos_fase.pinky.movimento.estado2 == estado2.nenhum or \
-                elementos_fase.inky.movimento.estado2 == estado2.nenhum or elementos_fase.clyde.movimento.estado2 == estado2.nenhum:
-                
-                # apelido a variavel de controle de audio e o indice na lista de canais
-                controle_audio = elementos_fase.fase_atual.controle_audio
-                indice = controle_audio.nome_arquivos_audio.index("ghost_siren.ogg")
-
-                # se não toquei ela ainda ou não está tocando
-                if controle_audio.canais[indice] == None or not controle_audio.canais[indice].get_busy():
-                    
-                    # toca a mesma música novamente
-                    controle_audio.canais[indice] = controle_audio.sons[indice].play()
+            elif elementos_fase.blinky.movimento.estado2 == estado2.nenhum and elementos_fase.pinky.movimento.estado2 == estado2.nenhum and \
+                elementos_fase.inky.movimento.estado2 == estado2.nenhum and elementos_fase.clyde.movimento.estado2 == estado2.nenhum:
+                self.fase_atual.controle_audio.tocar_som("ghost_siren.ogg")
+                self.fase_atual.controle_audio.parar_som("ghost_return_to_home.ogg")
 
         if elementos_fase.pacman.movimento.estado2 == estado2.morto:
             self.vidas -= 1
