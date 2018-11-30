@@ -9,6 +9,6 @@ de Bacharelado em Ciência da Computação da Universidade Tuiuti do Paraná.
 
 ## Descrição
 
-Este repositório possui o jogo pac-man, desenvolvido em python utilizando a biblioteca pygame juntamente com a biblioteca scikit-learn para a implementação da inteligência artificial do jogo.
+Este repositório possui o jogo pac-man, desenvolvido em python utilizando a biblioteca pygame.
 
 
