@@ -27,13 +27,16 @@ class ControleAudio(object):
         for arquivo_audio in self.nome_arquivos_audio:
             self.sons.append(mixer.Sound(file=self.diretorio_base + arquivo_audio))
 
+    def silenciar_tudo(self):
+        for arquivo_audio in self.nome_arquivos_audio:
+            self.parar_som(arquivo_audio)
 
     def tocar_som(self, nome_audio, repetir_num_vezes=-1):
         # apelido a variavel de controle de audio e o indice na lista de canais
         indice = self.nome_arquivos_audio.index(nome_audio)
 
         # se não toquei ela ainda ou não está tocando
-        if self.canais[indice] == None or not self.canais[indice].get_busy():
+        if self.canais[indice] is None or not self.canais[indice].get_busy():
                     
             # toca a mesma música novamente
             self.canais[indice] = self.sons[indice].play(repetir_num_vezes)
@@ -44,7 +47,7 @@ class ControleAudio(object):
         indice = self.nome_arquivos_audio.index(nome_audio)
 
         # se toquei ela e está tocando
-        if self.canais[indice] != None and self.canais[indice].get_busy():
+        if self.canais[indice] is not None and self.canais[indice].get_busy():
                     
             # para a música
             self.canais[indice] = self.sons[indice].stop()
@@ -55,4 +58,4 @@ class ControleAudio(object):
         indice = self.nome_arquivos_audio.index(nome_audio)
 
         # retorna se está tocando
-        return self.canais[indice] != None and self.canais[indice].get_busy()
+        return self.canais[indice] is not None and self.canais[indice].get_busy()

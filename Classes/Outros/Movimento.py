@@ -6,7 +6,7 @@ class estado(IntEnum):
 
 
 class estado2(IntEnum):
-    nenhum = 0
+    vivo = 0
     modo_fuga = 1
     morrendo = 2
     morto = 3
@@ -27,7 +27,7 @@ class Movimento(object):
         self.estado = estado.parado
         # estado2 é usado pelos fantasmas, pois os fantasmas podem andar em 
         # estado normal e em modo fuga.
-        self.estado2 = estado2.nenhum
+        self.estado2 = estado2.vivo
         self.direcao_atual = direcao.cima
         self.proxima_direcao = direcao.cima
         self.velocidade = 4

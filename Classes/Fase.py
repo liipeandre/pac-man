@@ -8,6 +8,7 @@ class Fase():
     def __init__(self, nome_fase:str, controle_fase=None, jogo=None):
         if controle_fase is None:
             # dados de controle da fase
+            self.nome_fase = nome_fase
             self.jogo = jogo
             self.controle_fase = ControleFase([460, 200], fase_atual=self)
             self.elementos_fase = ElementosFase(fase_atual=self)
@@ -17,9 +18,10 @@ class Fase():
 
         else:
             # dados de controle da fase
+            self.nome_fase = nome_fase
             self.jogo = jogo
-            self.elementos_fase = ControleFase([460, 200], controle_fase)
-            self.elementos_fase = ElementosFase()
+            self.controle_fase = ControleFase([460, 200], controle_fase=controle_fase, fase_atual=self)
+            self.elementos_fase = ElementosFase(fase_atual=self)
             self.carregador_mapa = MapLoader(nome_fase, self.elementos_fase)
             self.gerador_itens = GeradorItens()
             self.controle_audio = ControleAudio()

@@ -25,7 +25,7 @@ class GameComponent(object):
     def resetar(self, posicao):
         self.movimento.posicao = posicao.copy()
         self.movimento.estado = estado.parado
-        self.movimento.estado2 = estado2.nenhum
+        self.movimento.estado2 = estado2.vivo
         self.movimento.direcao_atual = direcao.cima
         self.movimento.proxima_direcao = direcao.cima
         self.sprite.sprite_frame = [0, 0]

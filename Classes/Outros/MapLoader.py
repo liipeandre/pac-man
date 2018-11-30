@@ -4,6 +4,8 @@ from Classes.Personagens.Blinky import Blinky
 from Classes.Personagens.Pinky import Pinky
 from Classes.Personagens.Inky import Inky
 from Classes.Personagens.Clyde import Clyde
+from Libraries import Rect
+from numpy import mean
 
 
 class MapLoader(object):
@@ -43,8 +45,6 @@ class MapLoader(object):
 
                     elif mapa[i][j] == 'D': 
                         elementos_fase.inky = Inky([sprite_size[x] * j, sprite_size[y] * i])
-                        elementos_fase.casa_fantasmas = [(elementos_fase.pinky.movimento.posicao[x] + \
-                                                          elementos_fase.inky.movimento.posicao[x])/2, sprite_size[y] * i]
                         elementos_fase.posicao_inicial_inky = [sprite_size[x] * j, sprite_size[y] * i]
 
                     elif mapa[i][j] == 'E': 
@@ -52,7 +52,7 @@ class MapLoader(object):
                         elementos_fase.posicao_inicial_clyde = [sprite_size[x] * j, sprite_size[y] * i]
 
                     # parede
-                    elif mapa[i][j] == '1' or mapa[i][j] == 'S': 
+                    elif mapa[i][j] == '1':
                         elementos_fase.paredes.append(Objeto([sprite_size[x] * j, sprite_size[y] * i], "wall"))
 
                     # powerpill
@@ -70,3 +70,8 @@ class MapLoader(object):
                     # itens (quando disponiveis)
                     elif mapa[i][j] == 'I':
                         elementos_fase.posicao_itens = (sprite_size[x] * j, sprite_size[y] * i)
+
+                    # comeco da casa dos fantasmas e parede
+                    elif mapa[i][j] == "W":
+                        elementos_fase.paredes.append(Objeto([sprite_size[x] * j, sprite_size[y] * i], "wall"))
+                        elementos_fase.casa_fantasmas = Rect((sprite_size[x] * j, sprite_size[y] * i), (sprite_size[x] * 8, sprite_size[y] * 5))

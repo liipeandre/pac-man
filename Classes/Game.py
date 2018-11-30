@@ -55,20 +55,24 @@ class Game():
                 if not self.fase_atual.controle_fase.fim_fase:
                     self.fase_atual.controle_fase.resetar_posicoes_personagens(self.fase_atual.elementos_fase)
 
+                # senão adiciona uma nova fase aleatoriamente e vai para a proxima.
+                else:
+                    self.fase_atual.controle_audio.silenciar_tudo()
+                    fase_nova = True
+                    self.fase_atual = Fase(choice([x for x in self.lista_fases if x != self.fase_atual.nome_fase]),
+                                           self.fase_atual.controle_fase,
+                                           jogo=self)
+
             # se acabaram as vidas do pacman, acabou o jogo
             if self.fase_atual.controle_fase.vidas == 0:
                 self.rodando = False
-
-            # senão adiciona uma nova fase aleatoriamente e vai para a proxima.
-            else:
-                self.fase_atual = Fase(choice(self.lista_fases), self.fase_atual.elementos_fase, jogo=self)
-
 
 
     def tratar_eventos(self):
         ''' Trata eventos do jogo'''
         sortear_item = USEREVENT + 1
         mudar_fantasmas_normal = USEREVENT + 2
+        mudar_fantasmas_morto_normal = USEREVENT + 3
 
         for evento in event.get():
             # sorteia o item, se evento acontecer
@@ -78,22 +82,42 @@ class Game():
             # se fantasmas estão em modo fuga, voltam ao normal.
             if evento.type == mudar_fantasmas_normal:
                 if self.fase_atual.elementos_fase.blinky.movimento.estado2 == estado2.modo_fuga:
-                   self.fase_atual.elementos_fase.blinky.movimento.estado2 = estado2.nenhum
+                   self.fase_atual.elementos_fase.blinky.movimento.estado2 = estado2.vivo
 
                 if self.fase_atual.elementos_fase.pinky.movimento.estado2 == estado2.modo_fuga:
-                   self.fase_atual.elementos_fase.pinky.movimento.estado2 = estado2.nenhum
+                   self.fase_atual.elementos_fase.pinky.movimento.estado2 = estado2.vivo
 
                 if self.fase_atual.elementos_fase.inky.movimento.estado2 == estado2.modo_fuga:
-                   self.fase_atual.elementos_fase.inky.movimento.estado2 = estado2.nenhum
+                   self.fase_atual.elementos_fase.inky.movimento.estado2 = estado2.vivo
 
                 if self.fase_atual.elementos_fase.clyde.movimento.estado2 == estado2.modo_fuga:
-                   self.fase_atual.elementos_fase.clyde.movimento.estado2 = estado2.nenhum
+                   self.fase_atual.elementos_fase.clyde.movimento.estado2 = estado2.vivo
 
                 # desabilita o timer 
                 time.set_timer(mudar_fantasmas_normal, 0 * 1000)
 
                 # para o som
                 self.fase_atual.controle_audio.parar_som("ghost_frightened.ogg")
+
+            if evento.type == mudar_fantasmas_morto_normal:
+                if self.fase_atual.elementos_fase.blinky.movimento.estado2 == estado2.morto:
+                   self.fase_atual.elementos_fase.blinky.movimento.estado2 = estado2.vivo
+
+                if self.fase_atual.elementos_fase.pinky.movimento.estado2 == estado2.morto:
+                   self.fase_atual.elementos_fase.pinky.movimento.estado2 = estado2.vivo
+
+                if self.fase_atual.elementos_fase.inky.movimento.estado2 == estado2.morto:
+                   self.fase_atual.elementos_fase.inky.movimento.estado2 = estado2.vivo
+
+                if self.fase_atual.elementos_fase.clyde.movimento.estado2 == estado2.morto:
+                   self.fase_atual.elementos_fase.clyde.movimento.estado2 = estado2.vivo
+
+                # desabilita o timer
+                time.set_timer(mudar_fantasmas_morto_normal, 0 * 1000)
+
+                # para o som
+                self.fase_atual.controle_audio.parar_som("ghost_return_to_home.ogg")
+
 
     def atualizar_tela(self):
         ''' trata eventos visuais e sonoros (audio) '''

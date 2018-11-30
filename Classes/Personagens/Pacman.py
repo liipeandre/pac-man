@@ -22,29 +22,22 @@ class Pacman(GameComponent):
         event.pump()
         return key.get_pressed()
 
-    def move(self, elementos_fase):        
+    def move(self, elementos_fase):
+        # apelido dos eixos
+        x, y = 0, 1
+
         # ignoro qualquer acao se ja estiver morto/morrendo
         if self.movimento.estado2 != estado2.morrendo:
+
+            # ordena as paredes pela proximidade
+            elementos_fase.paredes.sort(key=lambda p: abs(p.movimento.posicao[x] - self.movimento.posicao[x]) +
+                                                      abs(p.movimento.posicao[y] - self.movimento.posicao[y]))
 
             # define a próxima acao
             teclas = self.escolher_acao()
 
-            # apelido dos eixos 
-            x, y = 0, 1
-
-            # ordena as paredes pela proximidade
-            elementos_fase.paredes.sort(key=lambda elemento: abs(elemento.movimento.posicao[x] - self.movimento.posicao[x]) +\
-                                                                          abs(elemento.movimento.posicao[y] - self.movimento.posicao[y]))     
-            
             # guardo a acao anterior
             direcao_anterior = self.movimento.direcao_atual
-
-            if teclas[K_SPACE]:
-                with open("Classes/AI/Posicoes.out", "w") as arquivo:
-                    saida = f"{str(elementos_fase.pacman)};{str(elementos_fase.blinky)};{str(elementos_fase.pinky)};{str(elementos_fase.inky)};{str(elementos_fase.clyde)};{str(elementos_fase.casa_fantasmas[0])};{str(elementos_fase.casa_fantasmas[1])}"
-                    for parede in elementos_fase.paredes:
-                        saida += f";{str(parede)}"
-                    arquivo.write(saida + ";\n")
 
             # se alguma tecla foi pressionada agora, proxima acao será ir na direcao da tecla.
             if teclas[K_UP]:

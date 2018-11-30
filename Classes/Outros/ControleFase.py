@@ -13,8 +13,9 @@ class ControleFase(GameComponent):
         # referencia para a fase atual
         self.fase_atual = fase_atual
 
-        # timer do modo fuga e o atual (em segundos)
-        self.timer_modo_fuga = 10
+        # timer do modo fuga e do modo morto
+        self.timer_modo_fuga = 6
+        self.timer_morto = 3
 
         # construtor base
         super().__init__(posicao, "Nenhum", None, True)
@@ -26,11 +27,13 @@ class ControleFase(GameComponent):
             # pontuacao e vidas da fase.
             self.pontuacao = 0
             self.vidas = 3
+            self.multiplicador = 1
 
         else:
             # pontuacao e vidas da fase.
             self.pontuacao = controle_fase.pontuacao
-            self.vidas = controle_fase.vidas      
+            self.vidas = controle_fase.vidas
+            self.multiplicador = controle_fase.multiplicador
 
 
 
@@ -77,12 +80,10 @@ class ControleFase(GameComponent):
                 self.pontuacao += powerpill.pontuacao
 
                 # muda o estado dos fantasmas
-                elementos_fase.blinky.movimento.estado2 = estado2.modo_fuga
-                elementos_fase.pinky.movimento.estado2 = estado2.modo_fuga
-                elementos_fase.inky.movimento.estado2 = estado2.modo_fuga
-                elementos_fase.clyde.movimento.estado2 = estado2.modo_fuga
+                for fantasma in [elementos_fase.blinky, elementos_fase.pinky, elementos_fase.inky, elementos_fase.clyde]:
+                    fantasma.movimento.estado2 = estado2.modo_fuga
 
-                # seta o evento de sortear item, a cada n segundos
+                # seta o evento de transformar os fantasmas ao normal, daqui alguns segundos
                 mudar_fantasmas_normal = USEREVENT + 2
                 time.set_timer(mudar_fantasmas_normal, self.timer_modo_fuga * 1000)    # x1000 (milisegundos)
 
@@ -105,69 +106,74 @@ class ControleFase(GameComponent):
             self.fim_fase = True
             elementos_fase.chave = None
 
+            # para os demais audios
+            elementos_fase.fase_atual.controle_audio.parar_som("ghost_frightened.ogg")
+            elementos_fase.fase_atual.controle_audio.parar_som("ghost_siren.ogg")
+            elementos_fase.fase_atual.controle_audio.parar_som("ghost_return_to_home.ogg")
+
             # toca o audio
-            elementos_fase.fase_atual.controle_audio.tocar_som("pacman_eatfruit.ogg", 1)
+            elementos_fase.fase_atual.controle_audio.tocar_som("pacman_eatfruit.ogg", 0)
+
+            # pausa o jogo por alguns segundos
+            time.wait(2000)
+
 
         # se pontuacao for igual a 20000 pontos, ganha uma vida extra
-        if self.pontuacao == 20000: 
-            self.vida += 1
+        if self.pontuacao == 20000 * self.multiplicador:
+            self.vidas += 1
+            self.multiplicador += 1
+
             # toca o audio
-            elementos_fase.fase_atual.controle_audio.tocar_som("pacman_extrapac.ogg", 1)
+            elementos_fase.fase_atual.controle_audio.tocar_som("pacman_extrapac.ogg", 0)
 
 
     def sistema_colisao_fantasmas(self, elementos_fase):
+        # se os fantasmas estiverem no centro da casa dos fantasmas, mudo o estado dele para vivo
+        for fantasma in [elementos_fase.blinky, elementos_fase.pinky, elementos_fase.inky, elementos_fase.clyde]:
+            if fantasma.movimento.estado2 == estado2.morto and fantasma.movimento.posicao == elementos_fase.casa_fantasmas.center:
+                fantasma.movimento.estado2 = estado2.vivo
+
         # testa se pacman colidiu com cada fantasma, se ele nao estiver morto ou morrendo.
         if elementos_fase.pacman.movimento.estado2 not in [estado2.morrendo, estado2.morto]:
-
             # se houve colisao
-            if elementos_fase.pacman.bounding_box().colliderect(elementos_fase.blinky.bounding_box()):
+            for fantasma in [elementos_fase.blinky, elementos_fase.pinky, elementos_fase.inky, elementos_fase.clyde]:
+                if elementos_fase.pacman.bounding_box().colliderect(fantasma.bounding_box()):
+                    # se o fantasma estiver em modo fuga, come ele, incrementa pontuacao e muda o estado dele para morto
+                    if fantasma.movimento.estado2 == estado2.modo_fuga:
+                        self.pontuacao += fantasma.pontuacao
+                        fantasma.movimento.estado2 = estado2.morto
+                        # adicoina o evento de reviver os fantasmas daqui alguns segundos.
+                        mudar_fantasmas_morto_normal = USEREVENT + 3
+                        time.set_timer(mudar_fantasmas_morto_normal, self.timer_morto * 1000)  # x1000 (milisegundos)
 
-                # se o fantasma estiver em modo fuga, come ele, incrementa pontuacao e muda o estado dele para morto
-                if elementos_fase.blinky.movimento.estado2 == estado2.modo_fuga:
-                    self.pontuacao += elementos_fase.blinky.pontuacao
-                    elementos_fase.blinky.movimento.estado2 = estado2.morto
-
-                # se ele nao estiver morto, pacman morre
-                elif elementos_fase.blinky.movimento.estado2 != estado2.morto:
-                    elementos_fase.pacman.movimento.estado2 = estado2.morrendo
-
-            elif elementos_fase.pacman.bounding_box().colliderect(elementos_fase.pinky.bounding_box()):
-                if elementos_fase.pinky.movimento.estado2 == estado2.modo_fuga:
-                    self.pontuacao += elementos_fase.pinky.pontuacao
-                    elementos_fase.pinky.movimento.estado2 = estado2.morto
-
-                elif elementos_fase.pinky.movimento.estado2 != estado2.morto:
-                    elementos_fase.pacman.movimento.estado2 = estado2.morrendo
-                    
-            elif elementos_fase.pacman.bounding_box().colliderect(elementos_fase.inky.bounding_box()):
-                if elementos_fase.inky.movimento.estado2 == estado2.modo_fuga:
-                    self.pontuacao += elementos_fase.inky.pontuacao
-                    elementos_fase.inky.movimento.estado2 = estado2.morto
-
-                elif elementos_fase.inky.movimento.estado2 != estado2.morto:
-                    elementos_fase.pacman.movimento.estado2 = estado2.morrendo
-
-            elif elementos_fase.pacman.bounding_box().colliderect(elementos_fase.clyde.bounding_box()):
-                if elementos_fase.clyde.movimento.estado2 == estado2.modo_fuga:
-                    self.pontuacao += elementos_fase.clyde.pontuacao
-                    elementos_fase.clyde.movimento.estado2 = estado2.morto
-
-                elif elementos_fase.clyde.movimento.estado2 != estado2.morto:
-                    elementos_fase.pacman.movimento.estado2 = estado2.morrendo
+                    # se ele nao estiver morto, pacman morre
+                    elif fantasma.movimento.estado2 != estado2.morto:
+                        elementos_fase.pacman.movimento.estado2 = estado2.morrendo
+                        time.wait(500)
 
             # se pacman estiver morrendo, toca a música de morte do pacman
             if elementos_fase.pacman.movimento.estado2 == estado2.morrendo:
-                self.fase_atual.controle_audio.tocar_som("pacman_death.ogg", 1)
+                # para os demais audios
+                elementos_fase.fase_atual.controle_audio.parar_som("ghost_frightened.ogg")
+                elementos_fase.fase_atual.controle_audio.parar_som("ghost_siren.ogg")
+                elementos_fase.fase_atual.controle_audio.parar_som("ghost_return_to_home.ogg")
 
-            # se algum fantasma estiver morto, toca a música de morte dos fantasmas
-            if elementos_fase.blinky.movimento.estado2 == estado2.morto or elementos_fase.pinky.movimento.estado2 == estado2.morto or \
-                elementos_fase.inky.movimento.estado2 == estado2.morto or elementos_fase.clyde.movimento.estado2 == estado2.morto:
-                
-                self.fase_atual.controle_audio.tocar_som("ghost_return_to_home.ogg")
+                # toca a musica de morte
+                self.fase_atual.controle_audio.tocar_som("pacman_death.ogg", 0)
 
-            # se fantasmas estao normais toca a musica de perseguição
-            elif elementos_fase.blinky.movimento.estado2 == estado2.nenhum and elementos_fase.pinky.movimento.estado2 == estado2.nenhum and \
-                elementos_fase.inky.movimento.estado2 == estado2.nenhum and elementos_fase.clyde.movimento.estado2 == estado2.nenhum:
+            for fantasma in [elementos_fase.blinky, elementos_fase.pinky, elementos_fase.inky, elementos_fase.clyde]:
+                # se algum fantasma estiver morto, toca a música de morte dos fantasmas
+                if fantasma.movimento.estado2 == estado2.morto:
+                    self.fase_atual.controle_audio.tocar_som("ghost_return_to_home.ogg")
+                    break
+
+            # se todos os fantasmas estao normais toca a musica de perseguição
+            todos_fantasmas = True
+            for fantasma in [elementos_fase.blinky, elementos_fase.pinky, elementos_fase.inky, elementos_fase.clyde]:
+                if fantasma.movimento.estado2 != estado2.vivo:
+                    todos_fantasmas = False
+
+            if todos_fantasmas and elementos_fase.pacman.movimento.estado2 == estado2.vivo:
                 self.fase_atual.controle_audio.tocar_som("ghost_siren.ogg")
                 self.fase_atual.controle_audio.parar_som("ghost_return_to_home.ogg")
 
@@ -185,9 +191,11 @@ class ControleFase(GameComponent):
                 if sprite_objeto.game_component.sprite.sprite_frame[x] == 10:
                     sprite_objeto.game_component.sprite.sprite_frame = [9, 4]
                     sprite_objeto.game_component.movimento.estado2 = estado2.morto
+                    time.wait(500)
                 else:
                     sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, 4]
-                time.wait(130)
+                    time.wait(150)
+
 
             # se parado, fica travado em sprite frame específico
             elif sprite_objeto.game_component.movimento.estado == estado.parado:
@@ -199,7 +207,7 @@ class ControleFase(GameComponent):
                     sprite_objeto.game_component.sprite.sprite_frame = [0, sprite_objeto.game_component.movimento.direcao_atual]
                 else:
                     sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, sprite_objeto.game_component.movimento.direcao_atual]
-                return
+            return
 
         if type(sprite_objeto.game_component) in [Blinky, Pinky, Inky, Clyde]:
             # se morreu, realiza a animação de morte
@@ -225,7 +233,7 @@ class ControleFase(GameComponent):
 
             # se parado sem modo_fuga, fica travado em sprite frame específico
             elif sprite_objeto.game_component.movimento.estado == estado.parado and \
-                sprite_objeto.game_component.movimento.estado2 == estado2.nenhum:
+                sprite_objeto.game_component.movimento.estado2 == estado2.vivo:
                 if sprite_objeto.game_component.movimento.estado2 != estado2.modo_fuga:
                     sprite_objeto.game_component.sprite.sprite_frame = [0, sprite_objeto.game_component.movimento.direcao_atual]
 
@@ -246,11 +254,11 @@ class ControleFase(GameComponent):
 
             # se andando, itera uma linha do sprite sheet, com os sprite frames da direcao escolhida.
             elif sprite_objeto.game_component.movimento.estado == estado.andando and \
-                sprite_objeto.game_component.movimento.estado2 == estado2.nenhum:
+                sprite_objeto.game_component.movimento.estado2 == estado2.vivo:
                 if sprite_objeto.game_component.sprite.sprite_frame[x] == 1:
-                    sprite_objeto.game_component.sprite.sprite_frame = [0, sprite_objeto.game_component.movimento.estado]
+                    sprite_objeto.game_component.sprite.sprite_frame = [0, sprite_objeto.game_component.movimento.direcao_atual]
                 else:
-                    sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, sprite_objeto.game_component.movimento.estado]
+                    sprite_objeto.game_component.sprite.sprite_frame = [sprite_objeto.game_component.sprite.sprite_frame[x]+1, sprite_objeto.game_component.movimento.direcao_atual]
 
 
     def resetar_posicoes_personagens(self, elementos_fase):
