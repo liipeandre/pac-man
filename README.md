@@ -18,6 +18,7 @@ Este repositório possui o jogo pac-man, desenvolvido em python utilizando a bib
          com a biblioteca Pygame instalada no mesmo.
 
 Obs1: Tutorial de instalação do Anaconda, configurado no path do sistema: http://docs.anaconda.com/anaconda/install/windows/
+
 Obs2: Comando para instalar o Pygame no Anaconda, inserido a partir do CMD ou POWERSHELL, após a instalação do Anaconda: 
       
       pip install pygame
