@@ -23,7 +23,7 @@ Obs2: Comando para instalar o Pygame no Anaconda, inserido a partir do CMD ou PO
       
       pip install pygame
 
-Obs3: O comando "pip" só será reconhecido no CMD e no POWERSHELL se o anaconda estiver configurado no path do sistema 
+Obs3: O comando "pip" só será reconhecido no CMD e no POWERSHELL se o Anaconda estiver configurado no path do sistema 
       (ver passo 8 do tutorial de instalação do Anaconda, disponível em http://docs.anaconda.com/anaconda/install/windows/).
   
 ## Controles
