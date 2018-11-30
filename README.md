@@ -13,8 +13,9 @@ Este repositório possui o jogo pac-man, desenvolvido em python utilizando a bib
 
 ## Como Jogar
 
-1º Modo: Executando o arquivo main.exe no diretório dist/main/.
-2º Modo: Executando o arquivo main.py com o Anaconda instalado (disponível para download em https://www.anaconda.com/download) e
+1º Modo: Executando o arquivo "main.exe" no diretório "dist/main/"
+
+2º Modo: Executando o arquivo "main.py" com o Anaconda instalado (disponível para download em https://www.anaconda.com/download) e
          com a biblioteca Pygame instalada no mesmo.
 
 Obs1: Tutorial de instalação do Anaconda, configurado no path do sistema: http://docs.anaconda.com/anaconda/install/windows/
