@@ -1,7 +1,7 @@
 # Pacman
 
-Trabalho desenvolvido para a disciplina de Fundamentos de Jogos Digitais do curso
-de Bacharelado em Ciência da Computação da Universidade Tuiuti do Paraná.
+Trabalho desenvolvido para a disciplina de Fundamentos de Jogos Digitais do Curso
+de Ciência da Computação da Universidade Tuiuti do Paraná.
 
 ## Autor
 
@@ -9,7 +9,7 @@ de Bacharelado em Ciência da Computação da Universidade Tuiuti do Paraná.
 
 ## Descrição
 
-Este repositório possui o jogo Pacman, desenvolvido em Python utilizando a biblioteca pygame.
+Este repositório possui o jogo Pacman, desenvolvido em Python e utilizando a biblioteca PyGame.
 
 ## Como Jogar
 
