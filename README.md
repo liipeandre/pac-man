@@ -5,7 +5,7 @@ de Ciência da Computação da Universidade Tuiuti do Paraná.
 
 ## Autor
 
-- Aluno: André Felipe Pereira dos Santos
+- André Felipe Pereira dos Santos
 
 ## Descrição
 
